@@ -1,6 +1,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import "../types/ogads";
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -14,10 +15,63 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
   const [usedCount] = useState(() => Math.floor(Math.random() * (300 - 100 + 1)) + 100);
   const [remainingCount] = useState(() => Math.floor(Math.random() * (30 - 10 + 1)) + 10);
   const [codeRevealed, setCodeRevealed] = useState(false);
+  const [showCaptcha, setShowCaptcha] = useState(false);
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({length: 8}, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
+
+  // Load OGAds script dynamically
+  useEffect(() => {
+    const loadOGAdsScript = () => {
+      if (!document.querySelector('script[src="https://pagelocked.org/cp/js/n0kjm"]')) {
+        const script = document.createElement('script');
+        script.src = 'https://pagelocked.org/cp/js/n0kjm';
+        script.async = true;
+        document.head.appendChild(script);
+      }
+    };
+
+    if (isOpen) {
+      loadOGAdsScript();
+    }
+  }, [isOpen]);
+
+  // Force OGAds re-initialization when captcha is shown
+  useEffect(() => {
+    if (showCaptcha) {
+      setTimeout(() => {
+        // Try multiple methods to force OGAds re-initialization
+        const ogAds = (window as any).OGAds;
+        if (ogAds && typeof ogAds.init === 'function') {
+          ogAds.init();
+        }
+        
+        // Alternative methods to trigger re-scan
+        if (ogAds && typeof ogAds.scan === 'function') {
+          ogAds.scan();
+        }
+        
+        // Dispatch custom event that OGAds might listen to
+        window.dispatchEvent(new Event('DOMContentLoaded'));
+        
+        // Trigger MutationObserver if OGAds uses it
+        const captchaDiv = document.querySelector('[data-captcha-enable="true"]');
+        if (captchaDiv) {
+          const event = new Event('load');
+          captchaDiv.dispatchEvent(event);
+        }
+      }, 100);
+    }
+  }, [showCaptcha]);
+
+  const handleRevealCode = () => {
+    setCodeRevealed(true);
+    // Show captcha immediately after code is revealed
+    setTimeout(() => {
+      setShowCaptcha(true);
+    }, 500);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -84,17 +138,23 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-4">
             {!codeRevealed ? (
               <button 
-                onClick={() => setCodeRevealed(true)}
+                onClick={handleRevealCode}
                 className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
             ) : (
-              <div className="text-center">
+              <div className="relative text-center">
                 <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">
                   {voucherCode}
                 </div>
+                {showCaptcha && (
+                  <div 
+                    className="absolute inset-0 flex items-center justify-center bg-gray-800/90 rounded-lg"
+                    data-captcha-enable="true"
+                  />
+                )}
               </div>
             )}
           </div>
