@@ -38,7 +38,7 @@ export const VoucherHeader = () => {
           </div>
         </div>
         
-        <h1 className="text-3xl font-bold text-orange-accent mb-1 tracking-tight">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-accent via-yellow-400 to-orange-accent bg-clip-text text-transparent mb-1 tracking-tight">
           VoucherFresh
         </h1>
         
