@@ -16,7 +16,7 @@ export const VoucherHeader = () => {
   return (
     <header className="relative bg-gradient-to-br from-purple-gradient-start to-purple-gradient-end min-h-[35vh] flex flex-col items-center justify-center px-4 overflow-hidden">
       {/* Black overlay */}
-      <div className="absolute inset-0 bg-black/25"></div>
+      <div className="absolute inset-0 bg-black/40"></div>
       
       {/* Background decorative animated stars */}
       <div className="absolute inset-0 overflow-hidden">

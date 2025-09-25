@@ -2,9 +2,9 @@ import { Ticket, Shield, CheckCircle, Clock, TrendingUp, Zap, Star } from "lucid
 
 export const Footer = () => {
   return (
-    <footer className="bg-gradient-to-br from-purple-gradient-start to-purple-gradient-end px-4 py-12 relative overflow-hidden">
+    <footer className="bg-gradient-to-tr from-purple-gradient-end to-purple-gradient-start px-4 py-12 relative overflow-hidden">
       {/* Black overlay */}
-      <div className="absolute inset-0 bg-black/25"></div>
+      <div className="absolute inset-0 bg-black/40"></div>
       
       {/* Background decorative animated stars */}
       <div className="absolute inset-0 overflow-hidden">
