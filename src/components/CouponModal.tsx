@@ -1,6 +1,18 @@
+
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
+
+// Extend window interface to include potential captcha objects
+declare global {
+  interface Window {
+    OGAds?: any;
+    ogads?: any;
+    OGADS?: any;
+    captcha?: any;
+    adcashMacros?: any;
+  }
+}
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -8,8 +20,8 @@ interface CouponModalProps {
   logo: string;
   brand: string;
   offer: string;
-  usedCount: number;
-  remainingCount: number;
+  usedCount: number;        // ✅ primit din card
+  remainingCount: number;   // ✅ primit din card
 }
 
 export const CouponModal = ({
@@ -23,32 +35,70 @@ export const CouponModal = ({
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
-  const [iframeKey, setIframeKey] = useState(0);
-
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  // Reset când deschizi modalul
+  // Reset states when modal opens
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
       setShowCaptcha(false);
-      setIframeKey((k) => k + 1); // iframe fresh la fiecare open
     }
   }, [isOpen]);
 
-  // mic delay ca să vezi voucherul blurat înainte de captcha
-  const handleReveal = () => {
-    setCodeRevealed(true);
-    setShowCaptcha(false);
-    // după ~700ms intră captcha în același box
-    setTimeout(() => {
-      setIframeKey((k) => k + 1); // forțează remount (curat)
-      setShowCaptcha(true);
-    }, 700);
-  };
+  useEffect(() => {
+    if (codeRevealed) {
+      const timer = setTimeout(() => {
+        setShowCaptcha(true);
+
+        setTimeout(() => {
+          const og =
+            (window as any).OGAds ||
+            (window as any).ogads ||
+            (window as any).OGADS ||
+            (window as any).adcashMacros;
+
+          try {
+            og?.init?.();
+            og?.scan?.();
+            og?.render?.();
+            og?.execute?.();
+            og?.refresh?.();
+            og?.reload?.();
+          } catch {}
+
+          const script = document.querySelector('script[src*="pagelocked.org"]') as HTMLScriptElement | null;
+          if (script) {
+            const newScript = document.createElement("script");
+            newScript.src = script.getAttribute("src") || "";
+            newScript.async = true;
+            document.head.appendChild(newScript);
+            setTimeout(() => {
+              try { document.head.removeChild(newScript); } catch {}
+            }, 2000);
+          }
+
+          ["DOMContentLoaded", "load", "resize"].forEach((eventType) => {
+            const event = new Event(eventType);
+            document.dispatchEvent(event);
+            window.dispatchEvent(event);
+          });
+
+          const captchaDiv = document.querySelector('[data-captcha-enable="true"]');
+          if (captchaDiv) {
+            captchaDiv.setAttribute("data-captcha-enable", "false");
+            setTimeout(() => {
+              captchaDiv.setAttribute("data-captcha-enable", "true");
+            }, 100);
+          }
+        }, 100);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [codeRevealed]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -63,7 +113,6 @@ export const CouponModal = ({
           <button
             onClick={onClose}
             className="absolute right-4 top-4 w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors"
-            aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
@@ -85,7 +134,7 @@ export const CouponModal = ({
           </div>
         </div>
 
-        {/* Stats */}
+        {/* Stats (folosim props-urile) */}
         <div className="px-6 py-4">
           <div className="flex items-center justify-center gap-8">
             <div className="text-center">
@@ -112,38 +161,24 @@ export const CouponModal = ({
           </div>
         </div>
 
-        {/* Reveal Code */}
+        {/* Reveal Code Button */}
         <div className="px-6 py-4">
-          {/* container FIX: înălțime controlată, nu mai „umflă” */}
-          <div className="relative h-[140px] max-w-xs mx-auto border-2 border-dashed border-gray-600 rounded-xl p-3 overflow-hidden">
+          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
             {!codeRevealed ? (
-              <div className="grid place-items-center h-full">
-                <button
-                  onClick={handleReveal}
-                  className="min-w-[120px] min-h-[40px] bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl
-                             transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
-                >
-                  <Copy className="w-4 h-4" />
-                  <span>Reveal Code</span>
-                </button>
-              </div>
+              <button
+                onClick={() => setCodeRevealed(true)}
+                className="w-full min-w-[120px] min-h-[40px] bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+              >
+                <Copy className="w-4 h-4" />
+                <span>Reveal Code</span>
+              </button>
             ) : showCaptcha ? (
-              // Captcha încadrat PERFECT în box
-              <div className="absolute inset-3">
-                <iframe
-                  key={iframeKey}
-                  src={`/locker-host.html?ts=${Date.now()}`}
-                  sandbox="allow-scripts allow-same-origin"
-                  className="w-full h-full rounded-md border-0"
-                  title="captcha-locker"
-                />
+              <div className="absolute inset-3 flex items-center justify-center">
+                <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center" />
               </div>
             ) : (
-              // voucher blurat, vizibil ~700ms
-              <div className="grid place-items-center h-full">
-                <div className="text-3xl font-bold text-white/90 blur-[3px] tracking-widest select-none">
-                  {voucherCode}
-                </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
               </div>
             )}
           </div>
