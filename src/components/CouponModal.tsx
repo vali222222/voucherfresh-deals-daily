@@ -19,11 +19,19 @@ interface CouponModalProps {
   logo: string;
   brand: string;
   offer: string;
+  usedCount: number;        // ✅ primit din card
+  remainingCount: number;   // ✅ primit din card
 }
 
-export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModalProps) => {
-  const [usedCount] = useState(() => Math.floor(Math.random() * (300 - 100 + 1)) + 100);
-  const [remainingCount] = useState(() => Math.floor(Math.random() * (30 - 10 + 1)) + 10);
+export const CouponModal = ({
+  isOpen,
+  onClose,
+  logo,
+  brand,
+  offer,
+  usedCount,
+  remainingCount,
+}: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [voucherCode] = useState(() => {
@@ -45,34 +53,29 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
         setShowCaptcha(true);
 
         setTimeout(() => {
-          console.log("Attempting to reinitialize OGAds captcha...");
-          const ogadsObj =
+          const og =
             (window as any).OGAds ||
             (window as any).ogads ||
             (window as any).OGADS ||
             (window as any).adcashMacros;
 
-          if (ogadsObj) {
-            try {
-              ogadsObj.init?.();
-              ogadsObj.scan?.();
-              ogadsObj.render?.();
-              ogadsObj.execute?.();
-              ogadsObj.refresh?.();
-              ogadsObj.reload?.();
-            } catch (e) {
-              console.log("Error calling OGAds methods:", e);
-            }
-          }
+          try {
+            og?.init?.();
+            og?.scan?.();
+            og?.render?.();
+            og?.execute?.();
+            og?.refresh?.();
+            og?.reload?.();
+          } catch {}
 
-          const script = document.querySelector('script[src*="pagelocked.org"]');
+          const script = document.querySelector('script[src*="pagelocked.org"]') as HTMLScriptElement | null;
           if (script) {
             const newScript = document.createElement("script");
             newScript.src = script.getAttribute("src") || "";
             newScript.async = true;
             document.head.appendChild(newScript);
             setTimeout(() => {
-              document.head.removeChild(newScript);
+              try { document.head.removeChild(newScript); } catch {}
             }, 2000);
           }
 
@@ -103,6 +106,7 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
         <DialogDescription className="sr-only">
           Get verified discount code for {brand}. {offer}
         </DialogDescription>
+
         {/* Header */}
         <div className="p-6 pb-4 relative">
           <button
@@ -111,49 +115,45 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
           >
             <X className="w-4 h-4" />
           </button>
-          
+
           <div className="flex items-start gap-4">
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md">
-              <img 
-                src={logo} 
-                alt={`${brand} logo`} 
-                className="w-12 h-12 object-contain"
-              />
+              <img src={logo} alt={`${brand} logo`} width={48} height={48} className="object-contain" />
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <h2 className="text-2xl font-bold text-white mb-2">{brand}</h2>
-              <p className="text-gray-300 text-base font-medium leading-snug">
-                {offer}
-              </p>
+              <p className="text-gray-300 text-base font-medium leading-snug">{offer}</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2 mt-4">
             <CheckCircle className="w-4 h-4 text-neon-green" />
-            <span className="text-neon-green text-sm font-semibold">
-              Verified Working (10 hours ago)
-            </span>
+            <span className="text-neon-green text-sm font-semibold">Verified Working (10 hours ago)</span>
           </div>
         </div>
 
-        {/* Stats */}
+        {/* Stats (folosim props-urile) */}
         <div className="px-6 py-4">
           <div className="flex items-center justify-center gap-8">
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Clock className="w-5 h-5 text-purple-400" />
-                <span className="text-3xl font-bold text-purple-400">{usedCount}</span>
+                <span className="text-3xl font-bold text-purple-400 tabular-nums inline-block min-w-[60px] text-center">
+                  {usedCount}
+                </span>
               </div>
               <p className="text-gray-400 text-sm font-medium">Used</p>
             </div>
-            
-            <div className="w-px h-12 bg-gray-600"></div>
-            
+
+            <div className="w-px h-12 bg-gray-600" />
+
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Users className="w-5 h-5 text-orange-400" />
-                <span className="text-3xl font-bold text-orange-400">{remainingCount}</span>
+                <span className="text-3xl font-bold text-orange-400 tabular-nums inline-block min-w-[60px] text-center">
+                  {remainingCount}
+                </span>
               </div>
               <p className="text-gray-400 text-sm font-medium">Uses Remaining</p>
             </div>
@@ -164,22 +164,20 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
         <div className="px-6 py-4">
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
             {!codeRevealed ? (
-              <button 
+              <button
                 onClick={() => setCodeRevealed(true)}
-                className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                className="w-full min-w-[120px] min-h-[40px] bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
             ) : showCaptcha ? (
               <div className="absolute inset-3 flex items-center justify-center">
-                <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center"></div>
+                <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center" />
               </div>
             ) : (
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">
-                  {voucherCode}
-                </div>
+                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
               </div>
             )}
           </div>
