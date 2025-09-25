@@ -3,14 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://pagelocked.org" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- 🔥 Google Fonts optimizat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" as="style" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- 🔥 CSS principal optimizat (nu mai blochează randarea) -->
+    <link rel="stylesheet" href="/assets/index-BATlbi4u.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="/assets/index-BATlbi4u.css"></noscript>
+
+    <!-- Preload imagini (ok) -->
     <link rel="preload" href="/src/assets/apple-logo.png" as="image">
     <link rel="preload" href="/src/assets/sephora-logo.png" as="image">
     <link rel="preload" href="/src/assets/hm-logo.png" as="image">
     <link rel="preload" href="/src/assets/zara-logo.png" as="image">
+
     <title>VoucherFresh - Premium Deals & Verified Daily Discount Codes</title>
     <meta name="description" content="Your premium destination for verified discount codes and exclusive deals from the world's top brands. 100% verified codes, updated every hour." />
     <meta name="author" content="VoucherFresh" />
@@ -27,7 +36,7 @@
 
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-    <script type="text/javascript" src="https://pagelocked.org/cp/js/n0kjm"></script>
+    <script type="module" src="/src/main.tsx" defer></script>
+    <script type="text/javascript" src="https://pagelocked.org/cp/js/n0kjm" defer></script>
   </body>
 </html>
