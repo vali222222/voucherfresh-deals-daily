@@ -19,8 +19,7 @@ export const BrandCard = memo(({ logo, brand, offer, usedToday, timeLeft }: Bran
 
   return (
     <div
-      className="bg-[#212532] border border-gray-600/50 rounded-xl p-4 shadow-xl hover:shadow-2xl transition-shadow duration-300 hover:border-neon-green/30 ring-1 ring-gray-500/20
-                 min-h-[220px]"
+      className="bg-[#212532] border border-gray-600/50 rounded-xl p-4 shadow-xl hover:shadow-2xl transition-shadow duration-300 hover:border-neon-green/30 ring-1 ring-gray-500/20 min-h-[220px]"
     >
       {/* Header brand */}
       <div className="flex items-start gap-3 mb-4">
@@ -44,7 +43,7 @@ export const BrandCard = memo(({ logo, brand, offer, usedToday, timeLeft }: Bran
 
       {/* Meta (pills gemene) */}
       <div className="flex items-center gap-3 mb-4">
-        {/* used today — pill gri, font identic cu 'left' */}
+        {/* used today — pill gri */}
         <div className="px-2.5 py-1 rounded-full border bg-[#3a4150] border-white/10">
           <div className="flex items-center gap-1.5">
             <Users className="w-3 h-3 text-white/90" />
@@ -55,7 +54,7 @@ export const BrandCard = memo(({ logo, brand, offer, usedToday, timeLeft }: Bran
           </div>
         </div>
 
-        {/* left — portocaliu (nemodificat, dar font identic) */}
+        {/* left — portocaliu */}
         <div className="px-2.5 py-1 bg-badge-orange/20 border border-orange-accent/20 rounded-full">
           <div className="flex items-center gap-1.5">
             <Clock className="w-3 h-3 text-orange-accent" />
@@ -66,22 +65,24 @@ export const BrandCard = memo(({ logo, brand, offer, usedToday, timeLeft }: Bran
         </div>
       </div>
 
-      {/* Buton stabil (fără scale) */}
+      {/* Buton stabil */}
       <button
         onClick={handleOpenModal}
-        className="w-full min-w-[120px] min-h-[40px] bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl
-                   transition-colors duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+        className="w-full min-w-[120px] min-h-[40px] bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-colors duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
       >
         <Tag className="w-4 h-4" />
         <span className="text-sm">Get Coupon Code</span>
       </button>
 
+      {/* 👇 PASĂM valorile în modal */}
       <CouponModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         logo={logo}
         brand={brand}
         offer={offer}
+        usedCount={usedToday}
+        remainingCount={timeLeft}
       />
     </div>
   );
