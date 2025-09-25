@@ -2,12 +2,15 @@ import { VoucherHeader } from "@/components/VoucherHeader";
 import { SearchBar } from "@/components/SearchBar";
 import { BrandCard } from "@/components/BrandCard";
 import { Footer } from "@/components/Footer";
+import { useState, useMemo } from "react";
 import appleLogo from "@/assets/apple-logo.png";
 import sephoraLogo from "@/assets/sephora-logo.png";
 import hmLogo from "@/assets/hm-logo.png";
 import zaraLogo from "@/assets/zara-logo.png";
 
 const Index = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  
   const brands = [
     {
       logo: appleLogo,
@@ -39,26 +42,41 @@ const Index = () => {
     },
   ];
 
+  const filteredBrands = useMemo(() => {
+    if (!searchQuery.trim()) return brands;
+    
+    return brands.filter(brand => 
+      brand.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      brand.offer.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery, brands]);
+
   return (
     <div className="min-h-screen bg-dark-background">
       <VoucherHeader />
       
       <div className="pb-8">
-        <SearchBar />
+        <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       </div>
 
       <main className="max-w-md mx-auto px-4 py-6">
         <div className="space-y-4">
-          {brands.map((brand, index) => (
-            <BrandCard
-              key={index}
-              logo={brand.logo}
-              brand={brand.brand}
-              offer={brand.offer}
-              usedToday={brand.usedToday}
-              timeLeft={brand.timeLeft}
-            />
-          ))}
+          {filteredBrands.length > 0 ? (
+            filteredBrands.map((brand, index) => (
+              <BrandCard
+                key={index}
+                logo={brand.logo}
+                brand={brand.brand}
+                offer={brand.offer}
+                usedToday={brand.usedToday}
+                timeLeft={brand.timeLeft}
+              />
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Nu au fost găsite oferte pentru "{searchQuery}"</p>
+            </div>
+          )}
         </div>
       </main>
 

@@ -1,8 +1,11 @@
 import { Search } from "lucide-react";
 
-export const SearchBar = () => {
-  console.log("SearchBar component rendering");
-  console.log("Search icon component:", Search);
+interface SearchBarProps {
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+}
+
+export const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
   
   return (
     <div className="w-full max-w-lg mx-auto px-4 -mt-6 relative z-20">
@@ -12,6 +15,8 @@ export const SearchBar = () => {
         </div>
         <input
           type="text"
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search brands, stores, or deals..."
           className="w-full pl-10 pr-4 py-3 bg-dark-card border border-border rounded-xl text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-neon-green focus:border-transparent shadow-lg backdrop-blur-sm"
         />
