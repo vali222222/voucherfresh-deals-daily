@@ -14,11 +14,6 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const isMobile = useIsMobile();
   
-  // Show mobile-only screen for desktop users
-  if (!isMobile) {
-    return <MobileOnlyScreen />;
-  }
-  
   const brands = [
     {
       logo: appleLogo,
@@ -58,6 +53,11 @@ const Index = () => {
       brand.offer.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery, brands]);
+
+  // Show mobile-only screen for desktop users
+  if (!isMobile) {
+    return <MobileOnlyScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-[#1a1c24]">
