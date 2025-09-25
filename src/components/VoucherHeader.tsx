@@ -1,6 +1,18 @@
 import { Ticket } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export const VoucherHeader = () => {
+  const [activeCount, setActiveCount] = useState(2854);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const randomCount = Math.floor(Math.random() * (3000 - 2800 + 1)) + 2800;
+      setActiveCount(randomCount);
+    }, 2000); // Changes every 2 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <header className="relative bg-gradient-to-br from-purple-gradient-start to-purple-gradient-end min-h-[45vh] flex flex-col items-center justify-center px-4 overflow-hidden">
       {/* Black overlay */}
@@ -39,7 +51,7 @@ export const VoucherHeader = () => {
           <div className="px-4 py-2 bg-badge-green/20 border border-badge-green-text/30 rounded-full backdrop-blur-sm">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-badge-green-text rounded-full"></div>
-              <span className="text-badge-green-text font-semibold text-sm">2,854 Active</span>
+              <span className="text-badge-green-text font-semibold text-sm">{activeCount.toLocaleString()} Active</span>
             </div>
           </div>
           
