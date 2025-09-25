@@ -21,7 +21,7 @@ export const Footer = () => {
           <div className="w-12 h-12 bg-gradient-to-br from-orange-accent to-yellow-500 rounded-xl flex items-center justify-center shadow-lg">
             <Ticket className="w-6 h-6 text-white" strokeWidth={2.5} />
           </div>
-          <h2 className="text-2xl font-bold text-orange-accent">VoucherFresh</h2>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-accent via-yellow-400 to-orange-accent bg-clip-text text-transparent">VoucherFresh</h2>
         </div>
 
         {/* Description */}
