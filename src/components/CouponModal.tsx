@@ -18,12 +18,12 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md bg-gray-800 border-gray-700 text-white p-0 gap-0 rounded-2xl">
         {/* Header */}
-        <div className="p-6 pb-4">
+        <div className="p-6 pb-4 relative">
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 text-gray-400 hover:text-white transition-colors"
+            className="absolute right-4 top-4 w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
           
           <div className="flex items-start gap-4">
