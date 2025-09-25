@@ -13,6 +13,11 @@ interface CouponModalProps {
 export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModalProps) => {
   const [usedCount] = useState(() => Math.floor(Math.random() * (300 - 100 + 1)) + 100);
   const [remainingCount] = useState(() => Math.floor(Math.random() * (30 - 10 + 1)) + 10);
+  const [codeRevealed, setCodeRevealed] = useState(false);
+  const [voucherCode] = useState(() => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    return Array.from({length: 8}, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -77,10 +82,22 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
         {/* Reveal Code Button */}
         <div className="px-6 py-4">
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-4">
-            <button className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
-              <Copy className="w-4 h-4" />
-              <span>Reveal Code</span>
-            </button>
+            {!codeRevealed ? (
+              <button 
+                onClick={() => setCodeRevealed(true)}
+                className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+              >
+                <Copy className="w-4 h-4" />
+                <span>Reveal Code</span>
+              </button>
+            ) : (
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-2 blur-sm select-none">
+                  {voucherCode}
+                </div>
+                <p className="text-gray-400 text-xs">Code is blurred for security</p>
+              </div>
+            )}
           </div>
         </div>
 
