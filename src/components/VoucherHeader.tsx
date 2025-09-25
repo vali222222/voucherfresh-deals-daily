@@ -33,8 +33,8 @@ export const VoucherHeader = () => {
       {/* Logo and title */}
       <div className="relative z-10 text-center mb-6">
         <div className="mb-4 inline-block">
-          <div className="w-16 h-16 bg-gradient-to-br from-orange-accent to-yellow-500 rounded-2xl flex items-center justify-center shadow-2xl drop-shadow-lg">
-            <Ticket className="w-8 h-8 text-white drop-shadow-md" strokeWidth={2.5} />
+          <div className="w-16 h-16 bg-gradient-to-br from-orange-accent to-yellow-500 rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/10">
+            <Ticket className="w-8 h-8 text-white filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]" strokeWidth={2.5} />
           </div>
         </div>
         
