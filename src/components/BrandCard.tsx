@@ -10,7 +10,7 @@ interface BrandCardProps {
 
 export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCardProps) => {
   return (
-    <div className="bg-dark-card border border-border rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-neon-green/30">
+    <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-neon-green/30">
       <div className="flex items-start gap-3 mb-4">
         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
           <img 
