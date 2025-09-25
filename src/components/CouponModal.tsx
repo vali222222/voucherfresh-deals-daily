@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -14,10 +14,21 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
   const [usedCount] = useState(() => Math.floor(Math.random() * (300 - 100 + 1)) + 100);
   const [remainingCount] = useState(() => Math.floor(Math.random() * (30 - 10 + 1)) + 10);
   const [codeRevealed, setCodeRevealed] = useState(false);
+  const [showCaptcha, setShowCaptcha] = useState(false);
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({length: 8}, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
+
+  useEffect(() => {
+    if (codeRevealed) {
+      const timer = setTimeout(() => {
+        setShowCaptcha(true);
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [codeRevealed]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -91,10 +102,15 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
                 <span>Reveal Code</span>
               </button>
             ) : (
-              <div className="text-center">
+              <div className="text-center relative">
                 <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">
                   {voucherCode}
                 </div>
+                {showCaptcha && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div data-captcha-enable="true"></div>
+                  </div>
+                )}
               </div>
             )}
           </div>
