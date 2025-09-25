@@ -1,7 +1,7 @@
 import { Ticket, Star } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 
-export const VoucherHeader = () => {
+export const VoucherHeader = memo(() => {
   const [activeCount, setActiveCount] = useState(2854);
 
   useEffect(() => {
@@ -67,4 +67,4 @@ export const VoucherHeader = () => {
       </div>
     </header>
   );
-};
+});

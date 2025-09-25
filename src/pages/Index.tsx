@@ -4,7 +4,8 @@ import { BrandCard } from "@/components/BrandCard";
 import { Footer } from "@/components/Footer";
 import { MobileOnlyScreen } from "@/components/MobileOnlyScreen";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { preloadImages } from "@/utils/performance";
 import appleLogo from "@/assets/apple-logo.png";
 import sephoraLogo from "@/assets/sephora-logo.png";
 import hmLogo from "@/assets/hm-logo.png";
@@ -13,6 +14,16 @@ import zaraLogo from "@/assets/zara-logo.png";
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const isMobile = useIsMobile();
+
+  // Preload critical images on component mount
+  useEffect(() => {
+    const criticalImages = [appleLogo, sephoraLogo, hmLogo, zaraLogo];
+    preloadImages(criticalImages);
+  }, []);
+
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
   
   const brands = [
     {
@@ -64,7 +75,7 @@ const Index = () => {
       <VoucherHeader />
       
       <div className="pb-8">
-        <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+        <SearchBar searchQuery={searchQuery} onSearchChange={handleSearchChange} />
       </div>
 
       <main className="max-w-md mx-auto px-4 py-6 pb-12">

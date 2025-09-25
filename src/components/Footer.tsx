@@ -1,6 +1,7 @@
 import { Ticket, Shield, CheckCircle, Clock, TrendingUp, Zap, Star } from "lucide-react";
+import { memo } from "react";
 
-export const Footer = () => {
+export const Footer = memo(() => {
   return (
     <footer className="bg-gradient-to-tr from-purple-gradient-end to-purple-gradient-start px-4 py-12 relative overflow-hidden">
       {/* Black overlay */}
@@ -99,4 +100,4 @@ export const Footer = () => {
       </div>
     </footer>
   );
-};
+});
