@@ -46,8 +46,8 @@ export const VoucherHeader = () => {
           Premium Deals • Verified Daily
         </p>
 
-        {/* Status badges - lado a lado */}
-        <div className="flex gap-3 justify-center items-center">
+        {/* Status badges - lado a lado - HIDDEN */}
+        <div className="hidden gap-3 justify-center items-center">
           <div className="px-4 py-2 bg-badge-green/20 border border-badge-green-text/30 rounded-full backdrop-blur-sm">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-badge-green-text rounded-full"></div>
