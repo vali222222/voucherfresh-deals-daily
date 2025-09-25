@@ -185,8 +185,8 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
                   {voucherCode}
                 </div>
                 {showCaptcha && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div data-captcha-enable="true"></div>
+                  <div className="absolute inset-0 flex items-center justify-center w-full h-full">
+                    <div data-captcha-enable="true" className="w-full h-full flex items-center justify-center"></div>
                   </div>
                 )}
               </div>
