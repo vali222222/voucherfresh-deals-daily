@@ -103,7 +103,6 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
         <DialogDescription className="sr-only">
           Get verified discount code for {brand}. {offer}
         </DialogDescription>
-
         {/* Header */}
         <div className="p-6 pb-4 relative">
           <button
@@ -112,22 +111,29 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
           >
             <X className="w-4 h-4" />
           </button>
-
+          
           <div className="flex items-start gap-4">
-            {/* Logo fix CLS (dimensiuni rezervate) */}
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md">
-              <img src={logo} alt={`${brand} logo`} width="48" height="48" className="object-contain" />
+              <img 
+                src={logo} 
+                alt={`${brand} logo`} 
+                className="w-12 h-12 object-contain"
+              />
             </div>
-
+            
             <div className="flex-1 min-w-0">
               <h2 className="text-2xl font-bold text-white mb-2">{brand}</h2>
-              <p className="text-gray-300 text-base font-medium leading-snug">{offer}</p>
+              <p className="text-gray-300 text-base font-medium leading-snug">
+                {offer}
+              </p>
             </div>
           </div>
-
+          
           <div className="flex items-center gap-2 mt-4">
             <CheckCircle className="w-4 h-4 text-neon-green" />
-            <span className="text-neon-green text-sm font-semibold">Verified Working (10 hours ago)</span>
+            <span className="text-neon-green text-sm font-semibold">
+              Verified Working (10 hours ago)
+            </span>
           </div>
         </div>
 
@@ -137,23 +143,17 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Clock className="w-5 h-5 text-purple-400" />
-                {/* Badge fix CLS */}
-                <span className="text-3xl font-bold text-purple-400 inline-block min-w-badge text-center">
-                  {usedCount}
-                </span>
+                <span className="text-3xl font-bold text-purple-400">{usedCount}</span>
               </div>
               <p className="text-gray-400 text-sm font-medium">Used</p>
             </div>
-
+            
             <div className="w-px h-12 bg-gray-600"></div>
-
+            
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Users className="w-5 h-5 text-orange-400" />
-                {/* Badge fix CLS */}
-                <span className="text-3xl font-bold text-orange-400 inline-block min-w-badge text-center">
-                  {remainingCount}
-                </span>
+                <span className="text-3xl font-bold text-orange-400">{remainingCount}</span>
               </div>
               <p className="text-gray-400 text-sm font-medium">Uses Remaining</p>
             </div>
@@ -164,9 +164,9 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
         <div className="px-6 py-4">
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
             {!codeRevealed ? (
-              <button
+              <button 
                 onClick={() => setCodeRevealed(true)}
-                className="w-full min-w-button min-h-button bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
@@ -177,7 +177,9 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
               </div>
             ) : (
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
+                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">
+                  {voucherCode}
+                </div>
               </div>
             )}
           </div>
@@ -188,8 +190,7 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
           <div className="bg-gray-700/50 rounded-xl p-4">
             <h3 className="text-white font-bold text-lg mb-2">Offer Details:</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and
-              receive immediate savings on various products.
+              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and receive immediate savings on various products.
             </p>
           </div>
         </div>
