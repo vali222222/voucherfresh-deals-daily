@@ -1,4 +1,4 @@
-import { Ticket, Shield, CheckCircle, Clock, TrendingUp, Zap } from "lucide-react";
+import { Ticket, Shield, CheckCircle, Clock, TrendingUp, Zap, Star } from "lucide-react";
 
 export const Footer = () => {
   return (
@@ -8,11 +8,11 @@ export const Footer = () => {
       
       {/* Background decorative animated stars */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-12 left-8 text-white/20 text-sm animate-twinkle" style={{ animationDelay: "0.2s" }}>⭐</div>
-        <div className="absolute bottom-16 right-8 text-white/25 text-lg animate-twinkle" style={{ animationDelay: "1.3s" }}>✨</div>
-        <div className="absolute top-1/2 right-16 text-white/30 text-xs animate-twinkle" style={{ animationDelay: "0.7s" }}>⭐</div>
-        <div className="absolute top-20 left-1/3 text-white/15 text-sm animate-twinkle" style={{ animationDelay: "1.8s" }}>✨</div>
-        <div className="absolute bottom-1/3 left-12 text-white/25 text-xs animate-twinkle" style={{ animationDelay: "0.4s" }}>⭐</div>
+        <Star className="absolute top-12 left-8 text-white/20 w-4 h-4 animate-twinkle" style={{ animationDelay: "0.2s" }} />
+        <Star className="absolute bottom-16 right-8 text-white/25 w-5 h-5 animate-twinkle" style={{ animationDelay: "1.3s" }} />
+        <Star className="absolute top-1/2 right-16 text-white/30 w-3 h-3 animate-twinkle" style={{ animationDelay: "0.7s" }} />
+        <Star className="absolute top-20 left-1/3 text-white/15 w-4 h-4 animate-twinkle" style={{ animationDelay: "1.8s" }} />
+        <Star className="absolute bottom-1/3 left-12 text-white/25 w-3 h-3 animate-twinkle" style={{ animationDelay: "0.4s" }} />
       </div>
 
       <div className="max-w-sm mx-auto relative z-10">

@@ -1,4 +1,4 @@
-import { Ticket } from "lucide-react";
+import { Ticket, Star } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export const VoucherHeader = () => {
@@ -20,14 +20,14 @@ export const VoucherHeader = () => {
       
       {/* Background decorative animated stars */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-8 left-8 text-white/30 text-lg animate-twinkle" style={{ animationDelay: "0s" }}>⭐</div>
-        <div className="absolute top-16 right-12 text-white/20 text-sm animate-twinkle" style={{ animationDelay: "0.5s" }}>✨</div>
-        <div className="absolute bottom-16 right-6 text-white/25 text-xl animate-twinkle" style={{ animationDelay: "1s" }}>⭐</div>
-        <div className="absolute top-1/3 left-16 text-white/20 text-xs animate-twinkle" style={{ animationDelay: "1.5s" }}>✨</div>
-        <div className="absolute bottom-1/3 left-6 text-white/30 text-sm animate-twinkle" style={{ animationDelay: "2s" }}>⭐</div>
-        <div className="absolute top-20 left-1/2 text-white/15 text-xs animate-twinkle" style={{ animationDelay: "0.3s" }}>✨</div>
-        <div className="absolute bottom-20 left-1/3 text-white/25 text-sm animate-twinkle" style={{ animationDelay: "1.2s" }}>⭐</div>
-        <div className="absolute top-1/4 right-8 text-white/20 text-lg animate-twinkle" style={{ animationDelay: "0.8s" }}>✨</div>
+        <Star className="absolute top-8 left-8 text-white/30 w-5 h-5 animate-twinkle" style={{ animationDelay: "0s" }} />
+        <Star className="absolute top-16 right-12 text-white/20 w-4 h-4 animate-twinkle" style={{ animationDelay: "0.5s" }} />
+        <Star className="absolute bottom-16 right-6 text-white/25 w-6 h-6 animate-twinkle" style={{ animationDelay: "1s" }} />
+        <Star className="absolute top-1/3 left-16 text-white/20 w-3 h-3 animate-twinkle" style={{ animationDelay: "1.5s" }} />
+        <Star className="absolute bottom-1/3 left-6 text-white/30 w-4 h-4 animate-twinkle" style={{ animationDelay: "2s" }} />
+        <Star className="absolute top-20 left-1/2 text-white/15 w-3 h-3 animate-twinkle" style={{ animationDelay: "0.3s" }} />
+        <Star className="absolute bottom-20 left-1/3 text-white/25 w-4 h-4 animate-twinkle" style={{ animationDelay: "1.2s" }} />
+        <Star className="absolute top-1/4 right-8 text-white/20 w-5 h-5 animate-twinkle" style={{ animationDelay: "0.8s" }} />
       </div>
 
       {/* Logo and title */}
