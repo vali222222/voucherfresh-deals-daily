@@ -1,7 +1,6 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
-import "../types/ogads";
 
 interface CouponModalProps {
   isOpen: boolean;
