@@ -1,5 +1,5 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { CheckCircle, Clock, Users, Copy } from "lucide-react";
+import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
 import { useState } from "react";
 
 interface CouponModalProps {
@@ -16,9 +16,15 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-gray-800 border-gray-700 text-white p-0 gap-0 rounded-2xl">
+      <DialogContent className="sm:max-w-md bg-gray-800 border-gray-700 text-white p-0 gap-0 rounded-2xl [&>button]:hidden">
         {/* Header */}
-        <div className="p-6 pb-4">
+        <div className="p-6 pb-4 relative">
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
           
           <div className="flex items-start gap-4">
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md">
