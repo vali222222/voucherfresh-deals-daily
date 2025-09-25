@@ -2,37 +2,6 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
 
-// ---- loader simplu, în același fișier ----
-let __lockerLoaded = false;
-function loadLockerOnce() {
-  if (__lockerLoaded) return;
-  __lockerLoaded = true;
-
-  const s = document.createElement("script");
-  s.src = "https://pagelocked.org/cp/js/n0kjm";
-  s.defer = true;
-  s.onload = () => {
-    const og =
-      (window as any).OGAds ||
-      (window as any).ogads ||
-      (window as any).OGADS ||
-      (window as any).adcashMacros;
-    try { og?.init?.(); og?.scan?.(); og?.render?.(); } catch {}
-  };
-  document.body.appendChild(s);
-}
-// ------------------------------------------
-
-declare global {
-  interface Window {
-    OGAds?: any;
-    ogads?: any;
-    OGADS?: any;
-    captcha?: any;
-    adcashMacros?: any;
-  }
-}
-
 interface CouponModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -54,32 +23,21 @@ export const CouponModal = ({
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
+  const [iframeKey, setIframeKey] = useState(0);
+
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  // Reset la deschiderea modalului
+  // Reset când deschizi modalul
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
       setShowCaptcha(false);
+      setIframeKey(k => k + 1); // forțează un iframe nou la fiecare open
     }
   }, [isOpen]);
-
-  // Când apare placeholder-ul, cere re-scan la librărie (dacă e încărcată)
-  useEffect(() => {
-    if (!showCaptcha) return;
-    const t = setTimeout(() => {
-      const og =
-        (window as any).OGAds ||
-        (window as any).ogads ||
-        (window as any).OGADS ||
-        (window as any).adcashMacros;
-      try { og?.init?.(); og?.scan?.(); og?.render?.(); } catch {}
-    }, 50);
-    return () => clearTimeout(t);
-  }, [showCaptcha]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -94,6 +52,7 @@ export const CouponModal = ({
           <button
             onClick={onClose}
             className="absolute right-4 top-4 w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors"
+            aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
@@ -115,7 +74,7 @@ export const CouponModal = ({
           </div>
         </div>
 
-        {/* Stats (aceleași numere ca pe card) */}
+        {/* Stats */}
         <div className="px-6 py-4">
           <div className="flex items-center justify-center gap-8">
             <div className="text-center">
@@ -144,13 +103,13 @@ export const CouponModal = ({
 
         {/* Reveal Code */}
         <div className="px-6 py-4">
-          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
+          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[120px] max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
                 onClick={() => {
                   setCodeRevealed(true);
                   setShowCaptcha(true);
-                  loadLockerOnce(); // 👉 încarcă librăria chiar acum
+                  setIframeKey(k => k + 1); // iframe nou la fiecare click
                 }}
                 className="w-full min-w-[120px] min-h-[40px] bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
@@ -159,8 +118,14 @@ export const CouponModal = ({
               </button>
             ) : showCaptcha ? (
               <div className="absolute inset-3 flex items-center justify-center">
-                {/* Placeholder OGAds */}
-                <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center" />
+                {/* 🔒 Locker în iframe sandbox */}
+                <iframe
+                  key={iframeKey}
+                  src={`/locker-host.html?ts=${Date.now()}`} /* bust cache optional */
+                  sandbox="allow-scripts allow-same-origin"
+                  className="w-full h-[160px] rounded-md border-0"
+                  title="captcha-locker"
+                />
               </div>
             ) : (
               <div className="text-center">
