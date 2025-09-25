@@ -170,7 +170,7 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
 
         {/* Reveal Code Button */}
         <div className="px-6 py-4">
-          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-sm mx-auto">
+          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
             {!codeRevealed ? (
               <button 
                 onClick={() => setCodeRevealed(true)}
