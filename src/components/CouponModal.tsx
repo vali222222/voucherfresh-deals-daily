@@ -5,9 +5,11 @@ import { useState, useEffect } from "react";
 // Extend window interface to include potential captcha objects
 declare global {
   interface Window {
-    LockVerify?: any;
-    lockverify?: any;
+    OGAds?: any;
+    ogads?: any;
+    OGADS?: any;
     captcha?: any;
+    adcashMacros?: any;
   }
 }
 
@@ -42,38 +44,59 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
       const timer = setTimeout(() => {
         setShowCaptcha(true);
         
-        // Try to trigger the lockverify script after captcha element is added
+        // Try to trigger the OGAds script after captcha element is added
         setTimeout(() => {
-          // Try different methods to reinitialize the captcha script
-          const script = document.querySelector('script[src*="lockverify.org"]');
-          if (script) {
-            console.log('Found lockverify script, attempting to reinitialize...');
-            
-            // Try common captcha reinitialize methods
-            const lockVerifyObj = (window as any).LockVerify || (window as any).lockverify || (window as any).captcha;
-            if (lockVerifyObj) {
-              console.log('LockVerify object found, calling methods...');
-              try {
-                lockVerifyObj.init?.();
-                lockVerifyObj.scan?.();
-                lockVerifyObj.render?.();
-                lockVerifyObj.execute?.();
-              } catch (e) {
-                console.log('Error calling LockVerify methods:', e);
-              }
-            }
-            
-            // Try triggering DOMContentLoaded event
-            const event = new Event('DOMContentLoaded');
-            document.dispatchEvent(event);
-            
-            // Try manually triggering the script
+          console.log('Attempting to reinitialize OGAds captcha...');
+          
+          // Method 1: Try to find and call OGAds objects
+          const ogadsObj = (window as any).OGAds || (window as any).ogads || (window as any).OGADS || (window as any).adcashMacros;
+          if (ogadsObj) {
+            console.log('OGAds object found, calling methods...');
             try {
-              eval(script.textContent || '');
+              ogadsObj.init?.();
+              ogadsObj.scan?.();
+              ogadsObj.render?.();
+              ogadsObj.execute?.();
+              ogadsObj.refresh?.();
+              ogadsObj.reload?.();
             } catch (e) {
-              console.log('Could not re-eval script:', e);
+              console.log('Error calling OGAds methods:', e);
             }
           }
+          
+          // Method 2: Try to re-execute the script
+          const script = document.querySelector('script[src*="pagelocked.org"]');
+          if (script) {
+            console.log('Found OGAds script, attempting different reinitialize methods...');
+            
+            // Create a new script element to re-execute
+            const newScript = document.createElement('script');
+            newScript.src = script.getAttribute('src') || '';
+            newScript.async = true;
+            document.head.appendChild(newScript);
+            
+            // Remove after a short delay to prevent conflicts
+            setTimeout(() => {
+              document.head.removeChild(newScript);
+            }, 2000);
+          }
+          
+          // Method 3: Trigger common DOM events
+          ['DOMContentLoaded', 'load', 'resize'].forEach(eventType => {
+            const event = new Event(eventType);
+            document.dispatchEvent(event);
+            window.dispatchEvent(event);
+          });
+          
+          // Method 4: Try to trigger mutation observer if script uses it
+          const captchaDiv = document.querySelector('[data-captcha-enable="true"]');
+          if (captchaDiv) {
+            captchaDiv.setAttribute('data-captcha-enable', 'false');
+            setTimeout(() => {
+              captchaDiv.setAttribute('data-captcha-enable', 'true');
+            }, 100);
+          }
+          
         }, 100);
       }, 500);
       
