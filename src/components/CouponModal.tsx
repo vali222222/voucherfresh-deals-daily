@@ -29,6 +29,14 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
     return Array.from({length: 8}, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
+  // Reset states when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setCodeRevealed(false);
+      setShowCaptcha(false);
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     if (codeRevealed) {
       const timer = setTimeout(() => {
