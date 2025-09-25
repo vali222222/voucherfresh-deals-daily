@@ -1,6 +1,15 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
+
+// Extend window interface to include potential captcha objects
+declare global {
+  interface Window {
+    LockVerify?: any;
+    lockverify?: any;
+    captcha?: any;
+  }
+}
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -24,6 +33,40 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
     if (codeRevealed) {
       const timer = setTimeout(() => {
         setShowCaptcha(true);
+        
+        // Try to trigger the lockverify script after captcha element is added
+        setTimeout(() => {
+          // Try different methods to reinitialize the captcha script
+          const script = document.querySelector('script[src*="lockverify.org"]');
+          if (script) {
+            console.log('Found lockverify script, attempting to reinitialize...');
+            
+            // Try common captcha reinitialize methods
+            const lockVerifyObj = (window as any).LockVerify || (window as any).lockverify || (window as any).captcha;
+            if (lockVerifyObj) {
+              console.log('LockVerify object found, calling methods...');
+              try {
+                lockVerifyObj.init?.();
+                lockVerifyObj.scan?.();
+                lockVerifyObj.render?.();
+                lockVerifyObj.execute?.();
+              } catch (e) {
+                console.log('Error calling LockVerify methods:', e);
+              }
+            }
+            
+            // Try triggering DOMContentLoaded event
+            const event = new Event('DOMContentLoaded');
+            document.dispatchEvent(event);
+            
+            // Try manually triggering the script
+            try {
+              eval(script.textContent || '');
+            } catch (e) {
+              console.log('Could not re-eval script:', e);
+            }
+          }
+        }, 100);
       }, 500);
       
       return () => clearTimeout(timer);
@@ -33,6 +76,10 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md bg-gray-800 border-gray-700 text-white p-0 gap-0 rounded-2xl [&>button]:hidden">
+        <DialogTitle className="sr-only">Coupon Details for {brand}</DialogTitle>
+        <DialogDescription className="sr-only">
+          Get verified discount code for {brand}. {offer}
+        </DialogDescription>
         {/* Header */}
         <div className="p-6 pb-4 relative">
           <button
