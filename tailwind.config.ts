@@ -75,20 +75,12 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
         "twinkle": {
           "0%, 100%": { opacity: "1", transform: "scale(1)" },
@@ -99,6 +91,15 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "twinkle": "twinkle 2s ease-in-out infinite",
+      },
+
+      // 🔥 ADD pentru CLS fix
+      minWidth: {
+        button: "120px",   // butoane stabile
+        badge: "40px",     // badge fix pentru nr. de coduri
+      },
+      minHeight: {
+        button: "40px",    // înălțime fixă la butoane
       },
     },
   },
