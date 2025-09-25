@@ -38,8 +38,10 @@ export const VoucherHeader = () => {
           </div>
         </div>
         
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-accent via-yellow-400 to-orange-accent bg-clip-text text-transparent mb-1 tracking-tight">
-          VoucherFresh
+        <h1 className="text-3xl font-bold mb-1 tracking-tight">
+          <span className="bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 bg-clip-text text-transparent">
+            VoucherFresh
+          </span>
         </h1>
         
         <p className="text-sm text-white/90 font-medium mb-6">
