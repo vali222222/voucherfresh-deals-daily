@@ -4,20 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- 🔥 Google Fonts optimizat -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" as="style" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-    <!-- 🔥 CSS principal optimizat -->
+    <!-- CSS principal (non-blocking) -->
     <link rel="stylesheet" href="/assets/index-BATlbi4u.css" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="/assets/index-BATlbi4u.css"></noscript>
 
-    <!-- 🔥 Preconnect pentru captcha locker -->
-    <link rel="preconnect" href="https://pagelocked.org" crossorigin />
-
-    <!-- Preload imagini (LCP mai bun) -->
+    <!-- Preload imagini -->
     <link rel="preload" href="/src/assets/apple-logo.png" as="image">
     <link rel="preload" href="/src/assets/sephora-logo.png" as="image">
     <link rel="preload" href="/src/assets/hm-logo.png" as="image">
@@ -40,17 +37,9 @@
   <body>
     <div id="root"></div>
 
-    <!-- Script principal defer -->
+    <!-- App script -->
     <script type="module" src="/src/main.tsx" defer></script>
 
-    <!-- 🔥 Captcha locker injectat după load -->
-    <script>
-      window.addEventListener("load", function() {
-        var s = document.createElement("script");
-        s.src = "https://pagelocked.org/cp/js/n0kjm";
-        s.defer = true;
-        document.body.appendChild(s);
-      });
-    </script>
+    <!-- 🔕 NU mai încărcăm aici scriptul pagelocked -->
   </body>
 </html>
