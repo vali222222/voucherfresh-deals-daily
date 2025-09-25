@@ -2,6 +2,8 @@ import { VoucherHeader } from "@/components/VoucherHeader";
 import { SearchBar } from "@/components/SearchBar";
 import { BrandCard } from "@/components/BrandCard";
 import { Footer } from "@/components/Footer";
+import { MobileOnlyScreen } from "@/components/MobileOnlyScreen";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useMemo } from "react";
 import appleLogo from "@/assets/apple-logo.png";
 import sephoraLogo from "@/assets/sephora-logo.png";
@@ -10,6 +12,12 @@ import zaraLogo from "@/assets/zara-logo.png";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const isMobile = useIsMobile();
+  
+  // Show mobile-only screen for desktop users
+  if (!isMobile) {
+    return <MobileOnlyScreen />;
+  }
   
   const brands = [
     {
