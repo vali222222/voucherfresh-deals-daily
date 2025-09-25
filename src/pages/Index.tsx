@@ -24,7 +24,7 @@ const Index = () => {
       brand: "Sephora",
       offer: "60% Off Your Order",
       usedToday: 209,
-      timeLeft: 13,
+      timeLeft: 18,
     },
     {
       logo: hmLogo,
