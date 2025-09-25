@@ -46,16 +46,16 @@ export const VoucherHeader = () => {
           Premium Deals • Verified Daily
         </p>
 
-        {/* Status badges - lado a lado - HIDDEN */}
-        <div className="hidden gap-3 justify-center items-center">
-          <div className="px-4 py-2 bg-badge-green/20 border border-badge-green-text/30 rounded-full backdrop-blur-sm">
+        {/* Status badges - lado a lado */}
+        <div className="flex gap-3 justify-center items-center">
+          <div className="px-4 py-2 bg-badge-green/5 border border-badge-green-text/10 rounded-full backdrop-blur-sm">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-badge-green-text rounded-full"></div>
               <span className="text-badge-green-text font-semibold text-sm">{activeCount.toLocaleString()} Active</span>
             </div>
           </div>
           
-          <div className="px-4 py-2 bg-badge-orange/20 border border-orange-accent/30 rounded-full backdrop-blur-sm">
+          <div className="px-4 py-2 bg-badge-orange/5 border border-orange-accent/10 rounded-full backdrop-blur-sm">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-orange-accent rounded-full"></div>
               <span className="text-orange-accent font-semibold text-sm">98% Success</span>
