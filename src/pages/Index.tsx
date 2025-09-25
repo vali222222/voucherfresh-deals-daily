@@ -59,7 +59,7 @@ const Index = () => {
         <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       </div>
 
-      <main className="max-w-md mx-auto px-4 py-6">
+      <main className="max-w-md mx-auto px-4 py-6 pb-12">
         <div className="space-y-4">
           {filteredBrands.length > 0 ? (
             filteredBrands.map((brand, index) => (
