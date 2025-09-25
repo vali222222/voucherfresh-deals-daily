@@ -20,7 +20,7 @@ export const BrandCard = memo(({ logo, brand, offer, usedToday, timeLeft }: Bran
   return (
     <div
       className="bg-[#212532] border border-gray-600/50 rounded-xl p-4 shadow-xl hover:shadow-2xl transition-shadow duration-300 hover:border-neon-green/30 ring-1 ring-gray-500/20
-                 min-h-[220px]"  /* 🔒 rezervă spațiul cardului */
+                 min-h-[220px]"
     >
       {/* Header brand */}
       <div className="flex items-start gap-3 mb-4">
@@ -46,7 +46,8 @@ export const BrandCard = memo(({ logo, brand, offer, usedToday, timeLeft }: Bran
       <div className="flex items-center gap-4 mb-4">
         <div className="flex items-center gap-1.5 text-muted-foreground">
           <Users className="w-3.5 h-3.5" />
-          <span className="text-xs font-medium inline-block min-w-[84px] text-left font-mono">
+          {/* tabular-nums = cifre egale, nu mai schimbă lățimea; păstrează Inter */}
+          <span className="text-xs font-medium inline-block min-w-[84px] text-left tabular-nums">
             {usedToday} used today
           </span>
         </div>
@@ -54,7 +55,7 @@ export const BrandCard = memo(({ logo, brand, offer, usedToday, timeLeft }: Bran
         <div className="px-2.5 py-1 bg-badge-orange/20 border border-orange-accent/20 rounded-full">
           <div className="flex items-center gap-1.5">
             <Clock className="w-3 h-3 text-orange-accent" />
-            <span className="text-orange-accent text-xs font-semibold inline-block min-w-[60px] text-center font-mono">
+            <span className="text-orange-accent text-xs font-semibold inline-block min-w-[60px] text-center tabular-nums">
               {timeLeft} left
             </span>
           </div>
