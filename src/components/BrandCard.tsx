@@ -1,4 +1,6 @@
 import { Tag, Users, Clock } from "lucide-react";
+import { useState } from "react";
+import { CouponModal } from "./CouponModal";
 
 interface BrandCardProps {
   logo: string;
@@ -9,6 +11,8 @@ interface BrandCardProps {
 }
 
 export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCardProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-neon-green/30">
       <div className="flex items-start gap-3 mb-4">
@@ -44,10 +48,21 @@ export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCard
         </div>
       </div>
 
-      <button className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:scale-[1.02] shadow-neon-green/20">
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:scale-[1.02] shadow-neon-green/20"
+      >
         <Tag className="w-4 h-4" />
         <span className="text-sm">Get Coupon Code</span>
       </button>
+
+      <CouponModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        logo={logo}
+        brand={brand}
+        offer={offer}
+      />
     </div>
   );
 };
