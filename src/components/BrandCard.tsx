@@ -16,7 +16,7 @@ export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCard
           <img 
             src={logo} 
             alt={`${brand} logo`} 
-            className="w-8 h-8 object-contain"
+            className="w-10 h-10 object-contain"
           />
         </div>
         
@@ -44,7 +44,7 @@ export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCard
         </div>
       </div>
 
-      <button className="w-full bg-neon-green hover:bg-neon-green/90 text-dark-background font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:scale-[1.02]">
+      <button className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:scale-[1.02] shadow-neon-green/20">
         <Tag className="w-4 h-4" />
         <span className="text-sm">Get Coupon Code</span>
       </button>

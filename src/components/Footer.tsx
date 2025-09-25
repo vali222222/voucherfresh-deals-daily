@@ -4,15 +4,15 @@ export const Footer = () => {
   return (
     <footer className="bg-gradient-to-br from-purple-gradient-start to-purple-gradient-end px-4 py-12 relative overflow-hidden">
       {/* Black overlay */}
-      <div className="absolute inset-0 bg-black/20"></div>
+      <div className="absolute inset-0 bg-black/25"></div>
       
-      {/* Background decorative stars */}
+      {/* Background decorative animated stars */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-12 left-8 text-white/10 text-sm">⭐</div>
-        <div className="absolute bottom-16 right-8 text-white/15 text-lg">✨</div>
-        <div className="absolute top-1/2 right-16 text-white/20 text-xs">⭐</div>
-        <div className="absolute top-20 left-1/3 text-white/10 text-sm">✨</div>
-        <div className="absolute bottom-1/3 left-12 text-white/15 text-xs">⭐</div>
+        <div className="absolute top-12 left-8 text-white/20 text-sm animate-twinkle" style={{ animationDelay: "0.2s" }}>⭐</div>
+        <div className="absolute bottom-16 right-8 text-white/25 text-lg animate-twinkle" style={{ animationDelay: "1.3s" }}>✨</div>
+        <div className="absolute top-1/2 right-16 text-white/30 text-xs animate-twinkle" style={{ animationDelay: "0.7s" }}>⭐</div>
+        <div className="absolute top-20 left-1/3 text-white/15 text-sm animate-twinkle" style={{ animationDelay: "1.8s" }}>✨</div>
+        <div className="absolute bottom-1/3 left-12 text-white/25 text-xs animate-twinkle" style={{ animationDelay: "0.4s" }}>⭐</div>
       </div>
 
       <div className="max-w-sm mx-auto relative z-10">

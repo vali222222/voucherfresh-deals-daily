@@ -4,17 +4,18 @@ export const VoucherHeader = () => {
   return (
     <header className="relative bg-gradient-to-br from-purple-gradient-start to-purple-gradient-end min-h-[45vh] flex flex-col items-center justify-center px-4 overflow-hidden">
       {/* Black overlay */}
-      <div className="absolute inset-0 bg-black/20"></div>
+      <div className="absolute inset-0 bg-black/25"></div>
       
-      {/* Background decorative stars */}
+      {/* Background decorative animated stars */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-8 left-8 text-white/20 text-lg">⭐</div>
-        <div className="absolute top-16 right-12 text-white/15 text-sm">✨</div>
-        <div className="absolute bottom-16 right-6 text-white/10 text-xl">⭐</div>
-        <div className="absolute top-1/3 left-16 text-white/20 text-xs">✨</div>
-        <div className="absolute bottom-1/3 left-6 text-white/15 text-sm">⭐</div>
-        <div className="absolute top-20 left-1/2 text-white/10 text-xs">✨</div>
-        <div className="absolute bottom-20 left-1/3 text-white/15 text-sm">⭐</div>
+        <div className="absolute top-8 left-8 text-white/30 text-lg animate-twinkle" style={{ animationDelay: "0s" }}>⭐</div>
+        <div className="absolute top-16 right-12 text-white/20 text-sm animate-twinkle" style={{ animationDelay: "0.5s" }}>✨</div>
+        <div className="absolute bottom-16 right-6 text-white/25 text-xl animate-twinkle" style={{ animationDelay: "1s" }}>⭐</div>
+        <div className="absolute top-1/3 left-16 text-white/20 text-xs animate-twinkle" style={{ animationDelay: "1.5s" }}>✨</div>
+        <div className="absolute bottom-1/3 left-6 text-white/30 text-sm animate-twinkle" style={{ animationDelay: "2s" }}>⭐</div>
+        <div className="absolute top-20 left-1/2 text-white/15 text-xs animate-twinkle" style={{ animationDelay: "0.3s" }}>✨</div>
+        <div className="absolute bottom-20 left-1/3 text-white/25 text-sm animate-twinkle" style={{ animationDelay: "1.2s" }}>⭐</div>
+        <div className="absolute top-1/4 right-8 text-white/20 text-lg animate-twinkle" style={{ animationDelay: "0.8s" }}>✨</div>
       </div>
 
       {/* Logo and title */}
@@ -33,8 +34,8 @@ export const VoucherHeader = () => {
           Premium Deals • Verified Daily
         </p>
 
-        {/* Status badges */}
-        <div className="flex flex-col gap-3 justify-center items-center">
+        {/* Status badges - lado a lado */}
+        <div className="flex gap-3 justify-center items-center">
           <div className="px-4 py-2 bg-badge-green/20 border border-badge-green-text/30 rounded-full backdrop-blur-sm">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-badge-green-text rounded-full"></div>
