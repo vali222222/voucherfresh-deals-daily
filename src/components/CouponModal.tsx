@@ -92,10 +92,9 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
               </button>
             ) : (
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-sm select-none">
+                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">
                   {voucherCode}
                 </div>
-                <p className="text-gray-400 text-xs">Code is blurred for security</p>
               </div>
             )}
           </div>
