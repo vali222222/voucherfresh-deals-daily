@@ -17,13 +17,11 @@ export const Footer = () => {
 
       <div className="max-w-sm mx-auto relative z-10">
         {/* Logo and title */}
-        <div className="text-left mb-6">
-          <div className="inline-block mb-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-accent to-yellow-500 rounded-xl flex items-center justify-center shadow-lg">
-              <Ticket className="w-6 h-6 text-white" strokeWidth={2.5} />
-            </div>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 bg-gradient-to-br from-orange-accent to-yellow-500 rounded-xl flex items-center justify-center shadow-lg">
+            <Ticket className="w-6 h-6 text-white" strokeWidth={2.5} />
           </div>
-          <h2 className="text-2xl font-bold text-orange-accent mb-3">VoucherFresh</h2>
+          <h2 className="text-2xl font-bold text-orange-accent">VoucherFresh</h2>
         </div>
 
         {/* Description */}
