@@ -14,7 +14,7 @@ export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCard
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="bg-[#1a1c24] border border-gray-600/50 rounded-xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-neon-green/30 ring-1 ring-gray-500/20">
+    <div className="bg-[#212532] border border-gray-600/50 rounded-xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-neon-green/30 ring-1 ring-gray-500/20">
       <div className="flex items-start gap-3 mb-4">
         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
           <img 
