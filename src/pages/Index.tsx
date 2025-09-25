@@ -52,7 +52,7 @@ const Index = () => {
   }, [searchQuery, brands]);
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-[#1a1c24]">
       <VoucherHeader />
       
       <div className="pb-8">
