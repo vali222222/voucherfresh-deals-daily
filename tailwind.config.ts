@@ -47,16 +47,26 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+        // VoucherFresh specific colors
+        "purple-gradient": {
+          start: "hsl(var(--purple-gradient-start))",
+          end: "hsl(var(--purple-gradient-end))",
         },
+        "neon-green": "hsl(var(--neon-green))",
+        "orange-accent": "hsl(var(--orange-accent))",
+        "dark-card": "hsl(var(--dark-card))",
+        "dark-background": "hsl(var(--dark-background))",
+        badge: {
+          green: "hsl(var(--badge-green))",
+          "green-text": "hsl(var(--badge-green-text))",
+          orange: "hsl(var(--badge-orange))",
+          "orange-text": "hsl(var(--badge-orange-text))",
+          purple: "hsl(var(--badge-purple))",
+          "purple-text": "hsl(var(--badge-purple-text))",
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",
