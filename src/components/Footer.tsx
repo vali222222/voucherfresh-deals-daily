@@ -2,90 +2,95 @@ import { Ticket, Shield, CheckCircle, Clock, TrendingUp, Zap } from "lucide-reac
 
 export const Footer = () => {
   return (
-    <footer className="bg-gradient-to-br from-purple-gradient-start to-purple-gradient-end px-4 py-16 relative overflow-hidden">
-      {/* Background decorative elements */}
+    <footer className="bg-gradient-to-br from-purple-gradient-start to-purple-gradient-end px-4 py-12 relative overflow-hidden">
+      {/* Black overlay */}
+      <div className="absolute inset-0 bg-black/20"></div>
+      
+      {/* Background decorative stars */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-16 left-12 w-6 h-6 border-2 border-white/10 rounded-lg rotate-45"></div>
-        <div className="absolute bottom-20 right-12 w-8 h-8 border-2 border-white/15 rounded-lg -rotate-12"></div>
-        <div className="absolute top-1/2 right-20 w-4 h-4 border border-white/20 rounded-full"></div>
+        <div className="absolute top-12 left-8 text-white/10 text-sm">⭐</div>
+        <div className="absolute bottom-16 right-8 text-white/15 text-lg">✨</div>
+        <div className="absolute top-1/2 right-16 text-white/20 text-xs">⭐</div>
+        <div className="absolute top-20 left-1/3 text-white/10 text-sm">✨</div>
+        <div className="absolute bottom-1/3 left-12 text-white/15 text-xs">⭐</div>
       </div>
 
-      <div className="max-w-4xl mx-auto relative z-10">
+      <div className="max-w-sm mx-auto relative z-10">
         {/* Logo and title */}
-        <div className="text-center mb-8">
-          <div className="inline-block mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-orange-accent to-yellow-500 rounded-2xl flex items-center justify-center shadow-xl">
-              <Ticket className="w-8 h-8 text-white" strokeWidth={2.5} />
+        <div className="text-left mb-6">
+          <div className="inline-block mb-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-accent to-yellow-500 rounded-xl flex items-center justify-center shadow-lg">
+              <Ticket className="w-6 h-6 text-white" strokeWidth={2.5} />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-orange-accent mb-4">VoucherFresh</h2>
+          <h2 className="text-2xl font-bold text-orange-accent mb-3">VoucherFresh</h2>
         </div>
 
         {/* Description */}
-        <p className="text-center text-white/90 text-lg leading-relaxed mb-8 max-w-3xl mx-auto">
+        <p className="text-left text-white/90 text-sm leading-relaxed mb-6">
           Your premium destination for verified discount codes and exclusive deals from the world's top brands.
         </p>
 
         {/* Feature badges */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          <div className="px-5 py-3 bg-badge-green/20 border border-badge-green-text/30 rounded-full backdrop-blur-sm">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-badge-green-text" />
-              <span className="text-badge-green-text font-semibold">100% Verified</span>
+        <div className="flex flex-wrap gap-2 mb-8">
+          <div className="px-3 py-2 bg-badge-green/20 border border-badge-green-text/30 rounded-full backdrop-blur-sm">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle className="w-3 h-3 text-badge-green-text" />
+              <span className="text-badge-green-text font-semibold text-xs">100% Verified</span>
             </div>
           </div>
           
-          <div className="px-5 py-3 bg-badge-purple/20 border border-badge-purple-text/30 rounded-full backdrop-blur-sm">
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-badge-purple-text" />
-              <span className="text-badge-purple-text font-semibold">Instant Access</span>
+          <div className="px-3 py-2 bg-badge-purple/20 border border-badge-purple-text/30 rounded-full backdrop-blur-sm">
+            <div className="flex items-center gap-1.5">
+              <Zap className="w-3 h-3 text-badge-purple-text" />
+              <span className="text-badge-purple-text font-semibold text-xs">Instant Access</span>
             </div>
           </div>
           
-          <div className="px-5 py-3 bg-badge-orange/20 border border-orange-accent/30 rounded-full backdrop-blur-sm">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-orange-accent" />
-              <span className="text-orange-accent font-semibold">Daily Updates</span>
+          <div className="px-3 py-2 bg-badge-orange/20 border border-orange-accent/30 rounded-full backdrop-blur-sm">
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3 h-3 text-orange-accent" />
+              <span className="text-orange-accent font-semibold text-xs">Daily Updates</span>
             </div>
           </div>
         </div>
 
         {/* Why VoucherFresh section */}
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-badge-purple/20 border border-badge-purple-text/30 rounded-xl flex items-center justify-center">
-              <Shield className="w-6 h-6 text-badge-purple-text" />
+        <div className="text-left">
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-8 h-8 bg-badge-purple/20 border border-badge-purple-text/30 rounded-lg flex items-center justify-center">
+              <Shield className="w-4 h-4 text-badge-purple-text" />
             </div>
-            <h3 className="text-2xl font-bold text-white">Why VoucherFresh?</h3>
+            <h3 className="text-lg font-bold text-white">Why VoucherFresh?</h3>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            <div className="flex items-center gap-4 text-left">
-              <div className="w-10 h-10 bg-badge-green/20 border border-badge-green-text/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                <CheckCircle className="w-5 h-5 text-badge-green-text" />
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-badge-green/20 border border-badge-green-text/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                <CheckCircle className="w-4 h-4 text-badge-green-text" />
               </div>
-              <span className="text-white font-medium">100% Verified Codes</span>
+              <span className="text-white font-medium text-sm">100% Verified Codes</span>
             </div>
 
-            <div className="flex items-center gap-4 text-left">
-              <div className="w-10 h-10 bg-badge-purple/20 border border-badge-purple-text/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Clock className="w-5 h-5 text-badge-purple-text" />
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-badge-purple/20 border border-badge-purple-text/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Clock className="w-4 h-4 text-badge-purple-text" />
               </div>
-              <span className="text-white font-medium">Updated Every Hour</span>
+              <span className="text-white font-medium text-sm">Updated Every Hour</span>
             </div>
 
-            <div className="flex items-center gap-4 text-left">
-              <div className="w-10 h-10 bg-badge-orange/20 border border-orange-accent/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                <TrendingUp className="w-5 h-5 text-orange-accent" />
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-badge-orange/20 border border-orange-accent/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-4 h-4 text-orange-accent" />
               </div>
-              <span className="text-white font-medium">Premium Brand Deals</span>
+              <span className="text-white font-medium text-sm">Premium Brand Deals</span>
             </div>
 
-            <div className="flex items-center gap-4 text-left">
-              <div className="w-10 h-10 bg-badge-purple/20 border border-badge-purple-text/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Zap className="w-5 h-5 text-badge-purple-text" />
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-badge-purple/20 border border-badge-purple-text/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Zap className="w-4 h-4 text-badge-purple-text" />
               </div>
-              <span className="text-white font-medium">Instant Code Access</span>
+              <span className="text-white font-medium text-sm">Instant Code Access</span>
             </div>
           </div>
         </div>
