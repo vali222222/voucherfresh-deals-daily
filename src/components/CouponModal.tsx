@@ -170,7 +170,7 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
 
         {/* Reveal Code Button */}
         <div className="px-6 py-4">
-          <div className="border-2 border-dashed border-gray-600 rounded-xl p-4 relative min-h-[100px]">
+          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-sm mx-auto">
             {!codeRevealed ? (
               <button 
                 onClick={() => setCodeRevealed(true)}
@@ -180,8 +180,8 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
                 <span>Reveal Code</span>
               </button>
             ) : showCaptcha ? (
-              <div className="absolute inset-4 flex items-center justify-center">
-                <div data-captcha-enable="true" className="w-full h-full min-h-[68px] flex items-center justify-center"></div>
+              <div className="absolute inset-3 flex items-center justify-center">
+                <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center"></div>
               </div>
             ) : (
               <div className="text-center">
