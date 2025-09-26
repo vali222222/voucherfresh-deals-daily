@@ -40,19 +40,3 @@
 .read-the-docs {
   color: #888;
 }
-/* === OGAds in-modal – iOS tap fix === */
-body.captcha-active [data-radix-dialog-content] {
-  transform: none !important;
-  animation: none !important;
-}
-
-body.captcha-active [data-radix-dialog-overlay] {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  animation: none !important;
-}
-
-/* asigură click-uri în iframe OGAds */
-body.captcha-active [data-captcha-enable] {
-  pointer-events: auto !important;
-}
