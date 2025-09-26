@@ -40,18 +40,5 @@
 
   <body>
     <div id="root"></div>
-
-    <!-- Script principal defer -->
-    <script type="module" src="/src/main.tsx" defer></script>
-
-    <!-- 🔥 Captcha locker injectat după load -->
-    <script>
-      window.addEventListener("load", function() {
-        var s = document.createElement("script");
-        s.src = "https://pagelocked.org/cp/js/n0kjm";
-        s.defer = true;
-        document.body.appendChild(s);
-      });
-    </script>
   </body>
 </html>
