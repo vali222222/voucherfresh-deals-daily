@@ -22,7 +22,8 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
+  const [verificationCompleted, setVerificationCompleted] = useState(false);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -33,18 +34,21 @@ export const CouponModal = ({
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
-      setIsProcessing(false);
+      setShowVerification(false);
+      setVerificationCompleted(false);
     }
   }, [isOpen]);
 
   const handleRevealCode = () => {
-    setIsProcessing(true);
-    
-    // Simulez un delay de "procesare" ca site-urile reale
+    setShowVerification(true);
+  };
+
+  const handleVerificationComplete = () => {
+    setVerificationCompleted(true);
     setTimeout(() => {
       setCodeRevealed(true);
-      setIsProcessing(false);
-    }, 2000);
+      setShowVerification(false);
+    }, 1000);
   };
 
   return (
@@ -116,11 +120,10 @@ export const CouponModal = ({
             {!codeRevealed ? (
               <button
                 onClick={handleRevealCode}
-                disabled={isProcessing}
-                className="w-full bg-neon-green hover:bg-neon-green/90 disabled:bg-gray-500 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
-                <span>{isProcessing ? "Processing..." : "Reveal Code"}</span>
+                <span>Reveal Code</span>
               </button>
             ) : (
               <div className="text-center">
@@ -129,6 +132,73 @@ export const CouponModal = ({
               </div>
             )}
           </div>
+
+        {/* Verification Modal */}
+        {showVerification && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" style={{ pointerEvents: 'auto' }}>
+            <div className="bg-white rounded-2xl p-6 max-w-sm mx-4 w-full">
+              <div className="text-center mb-4">
+                <div className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4">
+                  <h3 className="font-bold text-lg">VoucherFlash</h3>
+                </div>
+                <p className="text-gray-700 font-medium">
+                  Complete 1-2 of the task to verify you're not a bot.
+                </p>
+              </div>
+
+              <div className="space-y-3 mb-6">
+                <div className="border rounded-lg p-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                      <span className="text-purple-600 font-bold text-sm">S</span>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-800">Surveoo</h4>
+                      <p className="text-xs text-gray-600">Deschldeți și înregistrați-vă cu informații VALIDE pentru a debloca acest conținut.</p>
+                      <div className="flex text-yellow-400 text-xs mt-1">
+                        ★★★★☆
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border rounded-lg p-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                      <span className="text-gray-600 font-bold text-xs">Salt</span>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-800">Salt Bank</h4>
+                      <p className="text-xs text-gray-600">Instalați aplicația și deschldeți-o după 10-30 de secunde de la instalare. Navigați în aplicație timp de 20 de secunde.</p>
+                      <div className="flex text-yellow-400 text-xs mt-1">
+                        ★★★★★
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 justify-center mb-4">
+                <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                  <span className="text-gray-600">⟲</span>
+                </button>
+                <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                  <span className="text-gray-600">🏠</span>
+                </button>
+                <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                  <span className="text-gray-600">⚠</span>
+                </button>
+              </div>
+
+              <button 
+                onClick={handleVerificationComplete}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+              >
+                VERIFICA
+              </button>
+            </div>
+          </div>
+        )}
         </div>
 
         {/* Offer Details */}
