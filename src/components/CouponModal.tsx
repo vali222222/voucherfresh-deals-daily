@@ -12,6 +12,64 @@ interface CouponModalProps {
   timeLeft: number;
 }
 
+/* === util: overlay cu iframe verify.html (embed) === */
+function openVerifyOverlay(onDone?: () => void, onClose?: () => void) {
+  const overlay = document.createElement("div");
+  Object.assign(overlay.style, {
+    position: "fixed",
+    inset: "0",
+    zIndex: "99999",
+    background: "rgba(0,0,0,0.6)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "16px",
+    boxSizing: "border-box",
+  });
+
+  const frame = document.createElement("iframe");
+  frame.src = `/verify.html?embed=1`; // pagina ta din /public
+  Object.assign(frame.style, {
+    width: "min(560px, 92vw)",
+    height: "80vh",
+    maxHeight: "720px",
+    border: "0",
+    borderRadius: "16px",
+    boxShadow: "0 10px 30px rgba(0,0,0,.35)",
+    background: "transparent",
+  });
+
+  const prevOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+
+  function cleanup() {
+    window.removeEventListener("message", onMsg);
+    overlay.remove();
+    document.body.style.overflow = prevOverflow;
+    onClose && onClose();
+  }
+
+  function onMsg(ev: MessageEvent) {
+    if (!ev?.data || typeof ev.data !== "object") return;
+    if ((ev.data as any).type === "vf:done") {
+      cleanup();
+      onDone && onDone();
+    }
+    if ((ev.data as any).type === "vf:close") {
+      cleanup();
+    }
+  }
+
+  // close când dai click pe fundal
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) cleanup();
+  });
+
+  window.addEventListener("message", onMsg);
+  overlay.appendChild(frame);
+  document.body.appendChild(overlay);
+}
+
 export const CouponModal = ({
   isOpen,
   onClose,
@@ -28,12 +86,19 @@ export const CouponModal = ({
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  // Reset state la fiecare deschidere
   useEffect(() => {
-    if (isOpen) {
-      setCodeRevealed(false);
-    }
+    if (isOpen) setCodeRevealed(false);
   }, [isOpen]);
+
+  const handleReveal = () => {
+    setCodeRevealed(true); // arată codul blurat instant
+    setTimeout(() => {
+      openVerifyOverlay(
+        // onDone: dacă vrei, aici poți debura codul automat după ce userul apasă "I'm done" în verify.html
+        // () => setCodeRevealed(true)
+      );
+    }, 300);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -101,7 +166,7 @@ export const CouponModal = ({
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={() => setCodeRevealed(true)}
+                onClick={handleReveal}
                 className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
