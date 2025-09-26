@@ -174,7 +174,12 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
               </button>
             ) : showCaptcha ? (
               <div className="absolute inset-3 flex items-center justify-center">
-                <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center"></div>
+                <iframe 
+                  src="/locker-host.html" 
+                  className="w-full h-full min-h-[56px] border-0 bg-transparent"
+                  style={{ colorScheme: 'normal' }}
+                  allow="script-src 'unsafe-inline'"
+                />
               </div>
             ) : (
               <div className="absolute inset-3 flex items-center justify-center">
