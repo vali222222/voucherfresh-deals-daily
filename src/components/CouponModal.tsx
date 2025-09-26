@@ -123,7 +123,7 @@ export const CouponModal = ({
 
             <div className="w-px h-12 bg-gray-600" />
 
-            <div className="text-center">
+              <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Users className="w-5 h-5 text-orange-400" />
                 <span className="text-3xl font-bold text-orange-400 tabular-nums inline-block min-w-[60px] text-center">
@@ -149,7 +149,7 @@ export const CouponModal = ({
             ) : !captchaCompleted ? (
               <div className="text-center">
                 <p className="text-white mb-4">Complete CAPTCHA to reveal code:</p>
-                <div data-captcha-enable="true"></div>
+                <div data-captcha-enable="true" style={{ pointerEvents: 'auto', zIndex: 9999, position: 'relative' }}></div>
               </div>
             ) : (
               <div className="text-center">
