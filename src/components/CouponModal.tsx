@@ -1,4 +1,9 @@
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -12,6 +17,14 @@ interface CouponModalProps {
   timeLeft: number;
 }
 
+declare global {
+  interface Window {
+    // presupunem că scriptul captcha va apela ceva de genul acesta
+    onCaptchaSuccess?: () => void;
+    onCaptchaError?: () => void;
+  }
+}
+
 export const CouponModal = ({
   isOpen,
   onClose,
@@ -22,18 +35,86 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
+  const [captchaLoaded, setCaptchaLoaded] = useState(false);
+  const [captchaTriggered, setCaptchaTriggered] = useState(false);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+    return Array.from({ length: 8 }, () =>
+      chars[Math.floor(Math.random() * chars.length)]
+    ).join("");
   });
 
-  // Reset state la fiecare deschidere
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
+      setCaptchaLoaded(false);
+      setCaptchaTriggered(false);
+      // curățăm div-ul captcha dacă era
+      const existing = document.getElementById("captcha-slot");
+      if (existing) existing.remove();
     }
+    // Curățăm callback-urile globale dacă modalul se închide
+    return () => {
+      window.onCaptchaSuccess = undefined;
+      window.onCaptchaError = undefined;
+    };
   }, [isOpen]);
+
+  const loadCaptcha = () => {
+    return new Promise<void>((resolve, reject) => {
+      if (captchaLoaded) {
+        resolve();
+        return;
+      }
+
+      // creează div-ul placeholder
+      const div = document.createElement("div");
+      div.setAttribute("data-captcha-enable", "true");
+      div.id = "captcha-slot";
+      document.body.appendChild(div);
+
+      const script = document.createElement("script");
+      script.src = "https://lockedapp.org/cp/js/n0kjm";
+      script.type = "text/javascript";
+
+      script.onload = () => {
+        setCaptchaLoaded(true);
+        resolve();
+      };
+      script.onerror = () => {
+        reject(new Error("Failed to load captcha script"));
+      };
+
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleRevealClick = async () => {
+    if (captchaTriggered) return;
+    setCaptchaTriggered(true);
+
+    try {
+      await loadCaptcha();
+
+      // definim callback-ul global pe care scriptul captcha ar trebui să-l apeleze când validarea e OK
+      window.onCaptchaSuccess = () => {
+        // Aici afișăm codul doar după validare
+        setCodeRevealed(true);
+      };
+      window.onCaptchaError = () => {
+        // Dacă captcha e invalid sau eroare — poți afișa ceva sau reseta
+        alert("Captcha validation failed. Please try again.");
+        setCaptchaTriggered(false);
+      };
+
+      // Note: Nu apelăm `setCodeRevealed(true)` aici direct — așteptăm callback-ul
+    } catch (err) {
+      console.error("Error loading captcha:", err);
+      alert("Error loading captcha. Please try again.");
+      setCaptchaTriggered(false);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -54,18 +135,28 @@ export const CouponModal = ({
 
           <div className="flex items-start gap-4">
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md">
-              <img src={logo} alt={`${brand} logo`} width={48} height={48} className="object-contain" />
+              <img
+                src={logo}
+                alt={`${brand} logo`}
+                width={48}
+                height={48}
+                className="object-contain"
+              />
             </div>
 
             <div className="flex-1 min-w-0">
               <h2 className="text-2xl font-bold text-white mb-2">{brand}</h2>
-              <p className="text-gray-300 text-base font-medium leading-snug">{offer}</p>
+              <p className="text-gray-300 text-base font-medium leading-snug">
+                {offer}
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 mt-4">
             <CheckCircle className="w-4 h-4 text-neon-green" />
-            <span className="text-neon-green text-sm font-semibold">Verified Working (10 hours ago)</span>
+            <span className="text-neon-green text-sm font-semibold">
+              Verified Working (10 hours ago)
+            </span>
           </div>
         </div>
 
@@ -96,20 +187,22 @@ export const CouponModal = ({
           </div>
         </div>
 
-        {/* Reveal Code */}
+        {/* Reveal Code / Captcha Slot */}
         <div className="px-6 py-4">
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={() => setCodeRevealed(true)}
+                onClick={handleRevealClick}
                 className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
-                <span>Reveal Code</span>
+                <span>{captchaTriggered ? "Loading Captcha..." : "Reveal Code"}</span>
               </button>
             ) : (
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
+                <div className="text-3xl font-bold text-white mb-2">
+                  {voucherCode}
+                </div>
               </div>
             )}
           </div>
@@ -118,9 +211,13 @@ export const CouponModal = ({
         {/* Offer Details */}
         <div className="px-6 pb-6">
           <div className="bg-gray-700/50 rounded-xl p-4">
-            <h3 className="text-white font-bold text-lg mb-2">Offer Details:</h3>
+            <h3 className="text-white font-bold text-lg mb-2">
+              Offer Details:
+            </h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and receive immediate savings on various products.
+              Apply this discount code when you checkout to get{" "}
+              {offer.toLowerCase()} your {brand} purchase and receive immediate
+              savings on various products.
             </p>
           </div>
         </div>
