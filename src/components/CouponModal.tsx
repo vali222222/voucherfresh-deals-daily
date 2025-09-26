@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -40,62 +39,17 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
     }
   }, [isOpen]);
 
+  // Injectăm script-ul doar când vrem captcha
   useEffect(() => {
-    if (codeRevealed) {
-      const timer = setTimeout(() => {
-        setShowCaptcha(true);
+    if (!showCaptcha) return;
 
-        setTimeout(() => {
-          console.log("Attempting to reinitialize OGAds captcha...");
-          const ogadsObj =
-            (window as any).OGAds ||
-            (window as any).ogads ||
-            (window as any).OGADS ||
-            (window as any).adcashMacros;
-
-          if (ogadsObj) {
-            try {
-              ogadsObj.init?.();
-              ogadsObj.scan?.();
-              ogadsObj.render?.();
-              ogadsObj.execute?.();
-              ogadsObj.refresh?.();
-              ogadsObj.reload?.();
-            } catch (e) {
-              console.log("Error calling OGAds methods:", e);
-            }
-          }
-
-          const script = document.querySelector('script[src*="pagelocked.org"]');
-          if (script) {
-            const newScript = document.createElement("script");
-            newScript.src = script.getAttribute("src") || "";
-            newScript.async = true;
-            document.head.appendChild(newScript);
-            setTimeout(() => {
-              document.head.removeChild(newScript);
-            }, 2000);
-          }
-
-          ["DOMContentLoaded", "load", "resize"].forEach((eventType) => {
-            const event = new Event(eventType);
-            document.dispatchEvent(event);
-            window.dispatchEvent(event);
-          });
-
-          const captchaDiv = document.querySelector('[data-captcha-enable="true"]');
-          if (captchaDiv) {
-            captchaDiv.setAttribute("data-captcha-enable", "false");
-            setTimeout(() => {
-              captchaDiv.setAttribute("data-captcha-enable", "true");
-            }, 100);
-          }
-        }, 100);
-      }, 500);
-
-      return () => clearTimeout(timer);
+    if (!document.querySelector('script[src*="pagelocked.org"]')) {
+      const s = document.createElement("script");
+      s.src = "https://pagelocked.org/cp/js/n0kjm"; // <-- locker-ul tău OGAds
+      s.async = true;
+      document.body.appendChild(s);
     }
-  }, [codeRevealed]);
+  }, [showCaptcha]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -115,7 +69,7 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
           </button>
 
           <div className="flex items-start gap-4">
-            {/* Logo fix CLS (dimensiuni rezervate) */}
+            {/* Logo fix CLS */}
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md">
               <img src={logo} alt={`${brand} logo`} width="48" height="48" className="object-contain" />
             </div>
@@ -163,18 +117,25 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
 
         {/* Reveal Code Button */}
         <div className="px-6 py-4">
-          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
+          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[120px] max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={() => setCodeRevealed(true)}
+                onClick={() => {
+                  setCodeRevealed(true);
+                  setShowCaptcha(true);
+                }}
                 className="w-full min-w-button min-h-button bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
             ) : showCaptcha ? (
-              <div className="absolute inset-3 flex items-center justify-center">
-                <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center"></div>
+              <div className="relative w-full h-[200px] flex items-center justify-center z-50">
+                <div
+                  data-captcha-enable="true"
+                  className="w-full h-full flex items-center justify-center"
+                  style={{ zIndex: 9999 }}
+                />
               </div>
             ) : (
               <div className="absolute inset-3 flex items-center justify-center">
