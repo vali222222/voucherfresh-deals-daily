@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -22,22 +22,57 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
+  const [captchaActive, setCaptchaActive] = useState(false);
+  const captchaRef = useRef<HTMLDivElement | null>(null);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
+  // Reset + cleanup
   useEffect(() => {
-    if (isOpen) setCodeRevealed(false);
+    if (isOpen) {
+      setCodeRevealed(false);
+      setCaptchaActive(false);
+      document.body.classList.remove("captcha-active");
+      if (captchaRef.current) captchaRef.current.innerHTML = "";
+    } else {
+      document.body.classList.remove("captcha-active");
+    }
   }, [isOpen]);
 
+  // Montează OGAds în dashed box când activăm captcha
+  useEffect(() => {
+    if (!captchaActive || !captchaRef.current) return;
+
+    // flag pt CSS fix
+    document.body.classList.add("captcha-active");
+
+    // container curat + atribut OGAds
+    captchaRef.current.innerHTML = "";
+    captchaRef.current.setAttribute("data-captcha-enable", "true");
+
+    // scoatem instanțe vechi de script OGAds
+    document
+      .querySelectorAll<HTMLScriptElement>('script[src*="pagelocked.org/cp/js"]')
+      .forEach((s) => s.remove());
+
+    // injectăm scriptul OGAds (cache-buster ca să ruleze sigur)
+    const script = document.createElement("script");
+    script.src = `https://pagelocked.org/cp/js/n0kjm?t=${Date.now()}`;
+    script.type = "text/javascript";
+    document.body.appendChild(script);
+
+    // cleanup la demontare
+    return () => {
+      document.body.classList.remove("captcha-active");
+    };
+  }, [captchaActive]);
+
   const handleReveal = () => {
-    setCodeRevealed(true);                    // arată codul blurat
-    setTimeout(() => {
-      const ret = encodeURIComponent(window.location.href);
-      window.location.href = `/verify.html?return=${ret}`;  // mergi la captcha page
-    }, 300);
+    setCodeRevealed(true);                 // cod blurat imediat
+    setTimeout(() => setCaptchaActive(true), 300); // apoi apare captcha în box
   };
 
   return (
@@ -101,7 +136,7 @@ export const CouponModal = ({
           </div>
         </div>
 
-        {/* Reveal Code */}
+        {/* Reveal + Captcha în DASHED BOX */}
         <div className="px-6 py-4">
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
@@ -113,8 +148,15 @@ export const CouponModal = ({
                 <span>Reveal Code</span>
               </button>
             ) : (
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
+              <div className="flex flex-col items-center">
+                <div className="text-3xl font-bold text-white mb-3 blur-xl select-none">{voucherCode}</div>
+
+                {captchaActive && (
+                  <div
+                    ref={captchaRef}
+                    className="w-full min-h-[120px] rounded-lg border-2 border-dashed border-gray-500 p-2 bg-transparent pointer-events-auto"
+                  />
+                )}
               </div>
             )}
           </div>
