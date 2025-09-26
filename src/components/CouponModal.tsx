@@ -41,10 +41,13 @@ export const CouponModal = ({
 
   // Funcție pentru încărcarea dinamică a script-ului
   const loadCaptchaScript = () => {
-    // Verifică dacă script-ul există deja
-    if (document.querySelector('script[src="https://applocked.org/cp/js/n0kjm"]')) {
-      setScriptLoaded(true);
-      return;
+    // Elimină script-urile vechi dacă există
+    const existingScripts = document.querySelectorAll('script[src="https://applocked.org/cp/js/n0kjm"]');
+    existingScripts.forEach(script => script.remove());
+    
+    // Curăță și variabilele globale problematice
+    if ((window as any).synthient_url) {
+      delete (window as any).synthient_url;
     }
     
     const script = document.createElement('script');
@@ -52,6 +55,13 @@ export const CouponModal = ({
     script.src = 'https://applocked.org/cp/js/n0kjm';
     script.onload = () => {
       setScriptLoaded(true);
+      // Forțează reinițializarea captcha-ului
+      setTimeout(() => {
+        const captchaDiv = document.querySelector('[data-captcha-enable="true"]');
+        if (captchaDiv && (window as any).jQuery) {
+          (window as any).jQuery(captchaDiv).trigger('captcha-reinit');
+        }
+      }, 500);
     };
     script.onerror = () => {
       console.error('Failed to load captcha script');
