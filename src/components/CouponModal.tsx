@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { mountOgadsCaptcha } from "@/lib/ogads";
+import { mountOgadsCaptcha, cleanupOgadsCaptcha } from "@/lib/ogads";
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -47,9 +47,16 @@ export const CouponModal = ({
       setCodeRevealed(false);
     } else {
       // Clean up captcha when modal closes
-      document.body.classList.remove("captcha-active");
+      cleanupOgadsCaptcha();
     }
   }, [isOpen]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      cleanupOgadsCaptcha();
+    };
+  }, []);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

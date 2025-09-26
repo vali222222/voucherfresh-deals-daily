@@ -5,6 +5,9 @@ export const mountOgadsCaptcha = (el: HTMLElement): void => {
   document.querySelectorAll<HTMLScriptElement>('script[src*="pagelocked.org/cp/js"]')
     .forEach((script) => script.remove());
   
+  // Clear container content first
+  el.innerHTML = "";
+  
   // Set the required attribute
   el.setAttribute("data-captcha-enable", "true");
   console.log("✅ Set data-captcha-enable on element", el);
@@ -23,4 +26,25 @@ export const mountOgadsCaptcha = (el: HTMLElement): void => {
   
   document.body.appendChild(script);
   console.log("✅ OGAds script added to body");
+
+  // Store reference for cleanup
+  (el as any).__ogads_mounted = true;
+};
+
+export const cleanupOgadsCaptcha = (): void => {
+  // Remove body class
+  document.body.classList.remove("captcha-active");
+  
+  // Remove scripts
+  document.querySelectorAll<HTMLScriptElement>('script[src*="pagelocked.org/cp/js"]')
+    .forEach((script) => script.remove());
+    
+  // Clean up any OGAds elements
+  document.querySelectorAll('[data-captcha-enable]').forEach((el) => {
+    if ((el as any).__ogads_mounted) {
+      el.innerHTML = "";
+      el.removeAttribute("data-captcha-enable");
+      (el as any).__ogads_mounted = false;
+    }
+  });
 };
