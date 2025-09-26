@@ -177,8 +177,8 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
                 <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center"></div>
               </div>
             ) : (
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
+              <div className="absolute inset-3 flex items-center justify-center">
+                <div className="text-3xl font-bold text-white blur-xl select-none">{voucherCode}</div>
               </div>
             )}
           </div>
