@@ -22,6 +22,7 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
+  const [captchaCompleted, setCaptchaCompleted] = useState(false);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -32,8 +33,31 @@ export const CouponModal = ({
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
+      setCaptchaCompleted(false);
     }
   }, [isOpen]);
+
+  // Handle captcha completion
+  useEffect(() => {
+    if (codeRevealed && !captchaCompleted) {
+      // Add event listener for captcha completion
+      const handleCaptchaComplete = () => {
+        setCaptchaCompleted(true);
+      };
+
+      // Check if pagelocked is available and set up captcha
+      const checkCaptcha = () => {
+        const captchaDiv = document.querySelector('[data-captcha-enable="true"]');
+        if (captchaDiv && (window as any).pagelocked) {
+          (window as any).pagelocked.init();
+          // Listen for captcha completion (this might vary based on pagelocked API)
+          setTimeout(() => setCaptchaCompleted(true), 3000); // Fallback after 3 seconds
+        }
+      };
+
+      setTimeout(checkCaptcha, 100);
+    }
+  }, [codeRevealed, captchaCompleted]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -109,7 +133,25 @@ export const CouponModal = ({
               </button>
             ) : (
               <div className="text-center">
-                <div data-captcha-enable="true"></div>
+                {!captchaCompleted ? (
+                  <div>
+                    <div data-captcha-enable="true" className="mb-4"></div>
+                    <p className="text-gray-400 text-sm">Complete the captcha to reveal your code</p>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="text-3xl font-bold text-neon-green mb-2 tracking-wider font-mono">
+                      {voucherCode}
+                    </div>
+                    <button
+                      onClick={() => navigator.clipboard.writeText(voucherCode)}
+                      className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
+                    >
+                      <Copy className="w-4 h-4" />
+                      Copy Code
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
