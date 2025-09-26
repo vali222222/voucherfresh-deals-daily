@@ -109,14 +109,7 @@ export const CouponModal = ({
               </button>
             ) : (
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">{voucherCode}</div>
-                <button 
-                  onClick={() => navigator.clipboard.writeText(voucherCode)}
-                  className="text-neon-green text-sm hover:text-neon-green/80 transition-colors flex items-center gap-1 mx-auto"
-                >
-                  <Copy className="w-3 h-3" />
-                  Copy Code
-                </button>
+                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
               </div>
             )}
           </div>
