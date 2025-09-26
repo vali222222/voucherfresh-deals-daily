@@ -1,5 +1,5 @@
 
-import { Tag, Users, Clock, ChevronDown, Share2, CheckCircle, Info } from "lucide-react";
+import { Tag, Users, Clock } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 declare global {
@@ -21,7 +21,6 @@ interface BrandCardProps {
 export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCardProps) => {
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [codeRevealed, setCodeRevealed] = useState(false);
-  const [showFAQ, setShowFAQ] = useState(false);
   const captchaMountRef = useRef<HTMLDivElement | null>(null);
 
   // Montează captcha când e cerută
@@ -118,71 +117,13 @@ export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCard
             </div>
           </div>
 
-          {/* Instructions & Tips - Animat */}
-          <div className="mt-4 space-y-3 animate-fade-in">
-            {/* Progress Steps */}
-            <div className="bg-[#2a2d3a] border border-gray-600/50 rounded-xl p-4">
-              <h4 className="text-white font-semibold text-sm mb-3 flex items-center gap-2">
-                <Info className="w-4 h-4 text-blue-400" />
-                How to use your code:
-              </h4>
-              <div className="space-y-2">
-                <div className="flex items-center gap-3 text-xs">
-                  <div className="w-5 h-5 bg-neon-green rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-3 h-3 text-white" />
-                  </div>
-                  <span className="text-gray-300">Complete the captcha above</span>
-                </div>
-                <div className="flex items-center gap-3 text-xs">
-                  <div className="w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">2</span>
-                  </div>
-                  <span className="text-gray-400">Copy the revealed discount code</span>
-                </div>
-                <div className="flex items-center gap-3 text-xs">
-                  <div className="w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">3</span>
-                  </div>
-                  <span className="text-gray-400">Apply at {brand} checkout</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Social Sharing */}
-            <div className="flex items-center justify-between bg-[#2a2d3a] border border-gray-600/50 rounded-xl p-3">
-              <span className="text-gray-300 text-xs font-medium">Share this deal:</span>
-              <button className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
-                <Share2 className="w-4 h-4" />
-                <span className="text-xs">Share</span>
-              </button>
-            </div>
-
-            {/* FAQ Toggle */}
-            <button
-              onClick={() => setShowFAQ(!showFAQ)}
-              className="w-full bg-[#2a2d3a] border border-gray-600/50 rounded-xl p-3 flex items-center justify-between hover:bg-[#2f3240] transition-colors"
-            >
-              <span className="text-gray-300 text-xs font-medium">Questions? View FAQ</span>
-              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showFAQ ? 'rotate-180' : ''}`} />
-            </button>
-
-            {/* FAQ Content - Expandabil */}
-            {showFAQ && (
-              <div className="bg-[#252836] border border-gray-600/50 rounded-xl p-4 animate-fade-in space-y-3">
-                <div className="text-xs">
-                  <p className="text-gray-400 font-medium mb-1">How long is this code valid?</p>
-                  <p className="text-gray-300">Most codes are valid for 24-48 hours or until stock runs out.</p>
-                </div>
-                <div className="text-xs">
-                  <p className="text-gray-400 font-medium mb-1">What if the code doesn't work?</p>
-                  <p className="text-gray-300">Try refreshing and getting a new code, or check if minimum purchase requirements apply.</p>
-                </div>
-                <div className="text-xs">
-                  <p className="text-gray-400 font-medium mb-1">Is this safe to use?</p>
-                  <p className="text-gray-300">Yes! All codes are verified and safe. We work directly with {brand}.</p>
-                </div>
-              </div>
-            )}
+          {/* Offer Details */}
+          <div className="mt-4 bg-[#2a2d3a] border border-gray-600/50 rounded-xl p-4">
+            <h3 className="text-white font-bold text-lg mb-2">Offer Details:</h3>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and
+              receive immediate savings on various products.
+            </p>
           </div>
         </div>
       )}
