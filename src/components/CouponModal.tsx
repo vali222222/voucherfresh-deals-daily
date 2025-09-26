@@ -66,7 +66,23 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
             }
           }
 
-          // Remove deprecated event dispatching to fix console warnings
+          const script = document.querySelector('script[src*="pagelocked.org"]');
+          if (script) {
+            const newScript = document.createElement("script");
+            newScript.src = script.getAttribute("src") || "";
+            newScript.async = true;
+            document.head.appendChild(newScript);
+            setTimeout(() => {
+              document.head.removeChild(newScript);
+            }, 2000);
+          }
+
+          ["DOMContentLoaded", "load", "resize"].forEach((eventType) => {
+            const event = new Event(eventType);
+            document.dispatchEvent(event);
+            window.dispatchEvent(event);
+          });
+
           const captchaDiv = document.querySelector('[data-captcha-enable="true"]');
           if (captchaDiv) {
             captchaDiv.setAttribute("data-captcha-enable", "false");
