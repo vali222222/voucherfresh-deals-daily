@@ -7,6 +7,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { preloadImages } from "@/utils/performance";
 import appleLogo from "@/assets/apple-logo.png";
+import doordashLogo from "@/assets/doordash-logo.png";
 import sephoraLogo from "@/assets/sephora-logo.png";
 import hmLogo from "@/assets/hm-logo.png";
 import zaraLogo from "@/assets/zara-logo.png";
@@ -17,7 +18,7 @@ const Index = () => {
 
   // Preload critical images on component mount
   useEffect(() => {
-    const criticalImages = [appleLogo, sephoraLogo, hmLogo, zaraLogo];
+    const criticalImages = [appleLogo, doordashLogo, sephoraLogo, hmLogo, zaraLogo];
     preloadImages(criticalImages);
   }, []);
 
@@ -32,6 +33,13 @@ const Index = () => {
       offer: "Students Only - 95% Off Your Order",
       usedToday: 198,
       timeLeft: 13,
+    },
+    {
+      logo: doordashLogo,
+      brand: "DoorDash",
+      offer: "90% Off Your Order",
+      usedToday: 142,
+      timeLeft: 16,
     },
     {
       logo: sephoraLogo,
