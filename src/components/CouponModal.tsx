@@ -22,100 +22,35 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
-  const [scriptLoaded, setScriptLoaded] = useState(false);
-  const [captchaCompleted, setCaptchaCompleted] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  // Încărcare script global la mount
-  useEffect(() => {
-    const loadGlobalScript = () => {
-      // Verifică dacă script-ul este deja încărcat
-      const existingScript = document.querySelector('script[src="https://applocked.org/cp/js/n0kjm"]');
-      if (existingScript) return;
-
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = 'https://applocked.org/cp/js/n0kjm';
-      script.async = true;
-      script.id = 'applocked-captcha-script';
-      document.head.appendChild(script);
-    };
-
-    loadGlobalScript();
-  }, []);
-
   // Reset state la fiecare deschidere
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
-      setScriptLoaded(false);
-      setCaptchaCompleted(false);
+      setIsProcessing(false);
     }
   }, [isOpen]);
 
-  // Funcție pentru activarea captcha-ului
-  const activateCaptcha = () => {
-    setScriptLoaded(true);
-    
-    // Încearcă să activeze captcha-ul cu multiple metode
-    const attemptActivation = (attempt = 0) => {
-      if (attempt > 10) return; // Max 10 încercări
-      
-      setTimeout(() => {
-        const captchaDiv = document.querySelector('[data-captcha-enable="true"]');
-        
-        if (captchaDiv && (window as any).jQuery) {
-          try {
-            // Metodă 1: Trigger custom event
-            (window as any).jQuery(captchaDiv).trigger('captcha-init');
-            
-            // Metodă 2: Activare manuală
-            if ((window as any).synthientCaptcha) {
-              (window as any).synthientCaptcha.init();
-            }
-            
-            // Metodă 3: Click pe element dacă există
-            const captchaButton = captchaDiv.querySelector('button, .captcha-button, [role="button"]');
-            if (captchaButton) {
-              (captchaButton as HTMLElement).click();
-            }
-            
-            console.log('CAPTCHA activation attempted', attempt + 1);
-          } catch (error) {
-            console.log('CAPTCHA activation error:', error);
-            attemptActivation(attempt + 1);
-          }
-        } else {
-          attemptActivation(attempt + 1);
-        }
-      }, 200 * (attempt + 1)); // Delay progresiv
-    };
-    
-    attemptActivation();
-  };
-
   const handleRevealCode = () => {
-    setCodeRevealed(true);
-    activateCaptcha();
+    setIsProcessing(true);
+    
+    // Simulez un delay de "procesare" ca site-urile reale
+    setTimeout(() => {
+      setCodeRevealed(true);
+      setIsProcessing(false);
+    }, 2000);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent 
-        className="sm:max-w-md bg-[#212532] border-gray-600/50 text-white p-0 gap-0 rounded-2xl [&>button]:hidden" 
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onInteractOutside={(e) => {
-          // Permite interacțiunea cu CAPTCHA
-          const target = e.target as HTMLElement;
-          if (target.closest('[data-captcha-enable="true"]')) {
-            e.preventDefault();
-            return false;
-          }
-        }}
+        className="sm:max-w-md bg-[#212532] border-gray-600/50 text-white p-0 gap-0 rounded-2xl [&>button]:hidden"
       >
         <DialogTitle className="sr-only">Coupon Details for {brand}</DialogTitle>
         <DialogDescription className="sr-only">
@@ -181,16 +116,12 @@ export const CouponModal = ({
             {!codeRevealed ? (
               <button
                 onClick={handleRevealCode}
-                className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                disabled={isProcessing}
+                className="w-full bg-neon-green hover:bg-neon-green/90 disabled:bg-gray-500 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
-                <span>Reveal Code</span>
+                <span>{isProcessing ? "Processing..." : "Reveal Code"}</span>
               </button>
-            ) : !captchaCompleted ? (
-              <div className="text-center">
-                <p className="text-white mb-4">Complete CAPTCHA to reveal code:</p>
-                <div data-captcha-enable="true" style={{ pointerEvents: 'auto', zIndex: 9999, position: 'relative' }}></div>
-              </div>
             ) : (
               <div className="text-center">
                 <div className="text-3xl font-bold text-white mb-2 tracking-wider">{voucherCode}</div>
