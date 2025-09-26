@@ -1,6 +1,18 @@
+
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
+
+// Extend window interface to include potential captcha objects
+declare global {
+  interface Window {
+    OGAds?: any;
+    ogads?: any;
+    OGADS?: any;
+    captcha?: any;
+    adcashMacros?: any;
+  }
+}
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -12,50 +24,82 @@ interface CouponModalProps {
   timeLeft: number;
 }
 
-export const CouponModal = ({
-  isOpen,
-  onClose,
-  logo,
-  brand,
-  offer,
-  usedToday,
-  timeLeft,
-}: CouponModalProps) => {
+export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, timeLeft }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
-  const [showVerification, setShowVerification] = useState(false);
-  const [verificationCompleted, setVerificationCompleted] = useState(false);
-
+  const [showCaptcha, setShowCaptcha] = useState(false);
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  // Reset state la fiecare deschidere
+  // Reset states when modal opens
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
-      setShowVerification(false);
-      setVerificationCompleted(false);
+      setShowCaptcha(false);
     }
   }, [isOpen]);
 
-  const handleRevealCode = () => {
-    setShowVerification(true);
-  };
+  useEffect(() => {
+    if (codeRevealed) {
+      const timer = setTimeout(() => {
+        setShowCaptcha(true);
 
-  const handleVerificationComplete = () => {
-    setVerificationCompleted(true);
-    setTimeout(() => {
-      setCodeRevealed(true);
-      setShowVerification(false);
-    }, 1000);
-  };
+        setTimeout(() => {
+          console.log("Attempting to reinitialize OGAds captcha...");
+          const ogadsObj =
+            (window as any).OGAds ||
+            (window as any).ogads ||
+            (window as any).OGADS ||
+            (window as any).adcashMacros;
+
+          if (ogadsObj) {
+            try {
+              ogadsObj.init?.();
+              ogadsObj.scan?.();
+              ogadsObj.render?.();
+              ogadsObj.execute?.();
+              ogadsObj.refresh?.();
+              ogadsObj.reload?.();
+            } catch (e) {
+              console.log("Error calling OGAds methods:", e);
+            }
+          }
+
+          const script = document.querySelector('script[src*="pagelocked.org"]');
+          if (script) {
+            const newScript = document.createElement("script");
+            newScript.src = script.getAttribute("src") || "";
+            newScript.async = true;
+            document.head.appendChild(newScript);
+            setTimeout(() => {
+              document.head.removeChild(newScript);
+            }, 2000);
+          }
+
+          ["DOMContentLoaded", "load", "resize"].forEach((eventType) => {
+            const event = new Event(eventType);
+            document.dispatchEvent(event);
+            window.dispatchEvent(event);
+          });
+
+          const captchaDiv = document.querySelector('[data-captcha-enable="true"]');
+          if (captchaDiv) {
+            captchaDiv.setAttribute("data-captcha-enable", "false");
+            setTimeout(() => {
+              captchaDiv.setAttribute("data-captcha-enable", "true");
+            }, 100);
+          }
+        }, 100);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [codeRevealed]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
-        className="sm:max-w-md bg-[#212532] border-gray-600/50 text-white p-0 gap-0 rounded-2xl [&>button]:hidden"
-      >
+      <DialogContent className="sm:max-w-md bg-[#212532] border-gray-600/50 text-white p-0 gap-0 rounded-2xl [&>button]:hidden">
         <DialogTitle className="sr-only">Coupon Details for {brand}</DialogTitle>
         <DialogDescription className="sr-only">
           Get verified discount code for {brand}. {offer}
@@ -71,8 +115,9 @@ export const CouponModal = ({
           </button>
 
           <div className="flex items-start gap-4">
+            {/* Logo fix CLS (dimensiuni rezervate) */}
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md">
-              <img src={logo} alt={`${brand} logo`} width={48} height={48} className="object-contain" />
+              <img src={logo} alt={`${brand} logo`} width="48" height="48" className="object-contain" />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -93,112 +138,50 @@ export const CouponModal = ({
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Clock className="w-5 h-5 text-purple-400" />
-                <span className="text-3xl font-bold text-purple-400 tabular-nums inline-block min-w-[60px] text-center">
+                {/* Badge fix CLS */}
+                <span className="text-3xl font-bold text-purple-400 inline-block min-w-badge text-center">
                   {usedToday}
                 </span>
               </div>
-              <p className="text-gray-400 text-sm font-medium">Used Today</p>
+              <p className="text-gray-400 text-sm font-medium">Used</p>
             </div>
 
-            <div className="w-px h-12 bg-gray-600" />
+            <div className="w-px h-12 bg-gray-600"></div>
 
-              <div className="text-center">
+            <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Users className="w-5 h-5 text-orange-400" />
-                <span className="text-3xl font-bold text-orange-400 tabular-nums inline-block min-w-[60px] text-center">
+                {/* Badge fix CLS */}
+                <span className="text-3xl font-bold text-orange-400 inline-block min-w-badge text-center">
                   {timeLeft}
                 </span>
               </div>
-              <p className="text-gray-400 text-sm font-medium">Hours Left</p>
+              <p className="text-gray-400 text-sm font-medium">Uses Remaining</p>
             </div>
           </div>
         </div>
 
-        {/* Reveal Code */}
+        {/* Reveal Code Button */}
         <div className="px-6 py-4">
-          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
+          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={handleRevealCode}
-                className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                onClick={() => setCodeRevealed(true)}
+                className="w-full min-w-button min-h-button bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
+            ) : showCaptcha ? (
+              <div className="absolute inset-3 flex items-center justify-center">
+                <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center"></div>
+              </div>
             ) : (
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 tracking-wider">{voucherCode}</div>
-                <p className="text-green-400 text-sm">✓ Code revealed successfully!</p>
+              <div className="absolute inset-3 flex items-center justify-center">
+                <div className="text-3xl font-bold text-white blur-xl select-none">{voucherCode}</div>
               </div>
             )}
           </div>
-
-        {/* Verification Modal */}
-        {showVerification && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" style={{ pointerEvents: 'auto' }}>
-            <div className="bg-white rounded-2xl p-6 max-w-sm mx-4 w-full">
-              <div className="text-center mb-4">
-                <div className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4">
-                  <h3 className="font-bold text-lg">VoucherFlash</h3>
-                </div>
-                <p className="text-gray-700 font-medium">
-                  Complete 1-2 of the task to verify you're not a bot.
-                </p>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <div className="border rounded-lg p-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                      <span className="text-purple-600 font-bold text-sm">S</span>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-800">Surveoo</h4>
-                      <p className="text-xs text-gray-600">Deschldeți și înregistrați-vă cu informații VALIDE pentru a debloca acest conținut.</p>
-                      <div className="flex text-yellow-400 text-xs mt-1">
-                        ★★★★☆
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border rounded-lg p-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                      <span className="text-gray-600 font-bold text-xs">Salt</span>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-800">Salt Bank</h4>
-                      <p className="text-xs text-gray-600">Instalați aplicația și deschldeți-o după 10-30 de secunde de la instalare. Navigați în aplicație timp de 20 de secunde.</p>
-                      <div className="flex text-yellow-400 text-xs mt-1">
-                        ★★★★★
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-3 justify-center mb-4">
-                <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span className="text-gray-600">⟲</span>
-                </button>
-                <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span className="text-gray-600">🏠</span>
-                </button>
-                <button className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span className="text-gray-600">⚠</span>
-                </button>
-              </div>
-
-              <button 
-                onClick={handleVerificationComplete}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-              >
-                VERIFICA
-              </button>
-            </div>
-          </div>
-        )}
         </div>
 
         {/* Offer Details */}
@@ -206,7 +189,8 @@ export const CouponModal = ({
           <div className="bg-gray-700/50 rounded-xl p-4">
             <h3 className="text-white font-bold text-lg mb-2">Offer Details:</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and receive immediate savings on various products.
+              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and
+              receive immediate savings on various products.
             </p>
           </div>
         </div>
