@@ -114,7 +114,7 @@ export const CouponModal = ({
 
         {/* Reveal Code */}
         <div className="px-6 py-4">
-          <div ref={containerRef} className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
+          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
                 onClick={handleRevealCode}
@@ -124,7 +124,7 @@ export const CouponModal = ({
                 <span>Reveal Code</span>
               </button>
             ) : (
-              <div className="text-center">
+              <div ref={containerRef} className="text-center">
                 <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
               </div>
             )}
