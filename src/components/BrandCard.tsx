@@ -1,7 +1,14 @@
 
 import { Tag, Users, Clock } from "lucide-react";
-import { useState } from "react";
-import { CouponModal } from "./CouponModal";
+import { useState, useRef, useEffect } from "react";
+
+declare global {
+  interface Window {
+    OGAds?: any;
+    ogads?: any;
+    OGADS?: any;
+  }
+}
 
 interface BrandCardProps {
   logo: string;
@@ -12,7 +19,33 @@ interface BrandCardProps {
 }
 
 export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCardProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const [codeRevealed, setCodeRevealed] = useState(false);
+  const captchaMountRef = useRef<HTMLDivElement | null>(null);
+
+  // Montează captcha când e cerută
+  useEffect(() => {
+    if (!showCaptcha || !captchaMountRef.current) return;
+
+    // Golim tot
+    captchaMountRef.current.innerHTML = "";
+
+    // Creăm mount nou
+    const mount = document.createElement("div");
+    mount.setAttribute("data-captcha-enable", "true");
+    captchaMountRef.current.appendChild(mount);
+
+    // Nudge pentru scanare
+    setTimeout(() => {
+      try {
+        const api = window.OGAds || window.ogads || window.OGADS;
+        api?.init?.();
+        api?.scan?.();
+      } catch {}
+      window.dispatchEvent(new Event("load"));
+      document.dispatchEvent(new Event("DOMContentLoaded"));
+    }, 40);
+  }, [showCaptcha]);
 
   return (
     <div className="bg-[#212532] border border-gray-600/50 rounded-xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-neon-green/30 ring-1 ring-gray-500/20">
@@ -49,23 +82,26 @@ export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCard
         </div>
       </div>
 
-      <button 
-        onClick={() => setIsModalOpen(true)}
-        className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:scale-[1.02] shadow-neon-green/20"
-      >
-        <Tag className="w-4 h-4" />
-        <span className="text-sm">Get Coupon Code</span>
-      </button>
-
-      <CouponModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        logo={logo}
-        brand={brand}
-        offer={offer}
-        usedToday={usedToday}
-        timeLeft={timeLeft}
-      />
+      {!showCaptcha ? (
+        <button 
+          onClick={() => {
+            setShowCaptcha(true);
+            setCodeRevealed(true);
+          }}
+          className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:scale-[1.02] shadow-neon-green/20"
+        >
+          <Tag className="w-4 h-4" />
+          <span className="text-sm">Get Coupon Code</span>
+        </button>
+      ) : (
+        <div className="captcha-container mt-4">
+          <div
+            ref={captchaMountRef}
+            className="w-full min-h-[360px] pointer-events-auto bg-[#1a1c24] rounded-xl border border-gray-600/50"
+            style={{ position: "relative" }}
+          />
+        </div>
+      )}
     </div>
   );
 };

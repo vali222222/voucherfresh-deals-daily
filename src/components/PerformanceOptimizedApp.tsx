@@ -1,8 +1,7 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { observeWebVitals } from '@/utils/performance';
 
-// Lazy load heavy components
-const CouponModal = lazy(() => import('./CouponModal').then(module => ({ default: module.CouponModal })));
+// Lazy load heavy components (removed CouponModal as it's no longer used)
 
 // Loading fallback component
 const LoadingSpinner = () => (
