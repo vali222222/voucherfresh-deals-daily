@@ -94,27 +94,23 @@ export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCard
           <span className="text-sm">Get Coupon Code</span>
         </button>
       ) : (
-        <div className="mt-4 space-y-3">
-          {/* Codul blurat */}
-          <div className="bg-[#2a2d3a] border border-gray-600/50 rounded-xl p-4 text-center">
-            <div className="text-lg font-bold text-white mb-2 blur-sm select-none">
-              SAVE50OFF
+        <div className="mt-4">
+          {/* Box unic cu cod blurat + captcha */}
+          <div className="bg-[#2a2d3a] border border-gray-600/50 rounded-xl p-4">
+            {/* Codul blurat */}
+            <div className="text-center mb-4">
+              <div className="text-lg font-bold text-white mb-2 blur-sm select-none">
+                SAVE50OFF
+              </div>
+              <p className="text-gray-400 text-xs">Complete the captcha to reveal code</p>
             </div>
-            <p className="text-gray-400 text-xs">Complete the captcha to reveal code</p>
-          </div>
-          
-          {/* Captcha compact */}
-          <div className="captcha-container">
+            
+            {/* Captcha direct în același box */}
             <div
               ref={captchaMountRef}
               className="w-full min-h-[80px] max-h-[100px] pointer-events-auto bg-[#1a1c24] rounded-xl border border-gray-600/50 overflow-hidden"
               style={{ position: "relative" }}
             />
-            
-            {/* Mini tips sub captcha */}
-            <div className="mt-2 text-center">
-              <p className="text-gray-500 text-xs">💡 Tip: Complete verification to unlock your discount</p>
-            </div>
           </div>
 
           {/* Offer Details */}
