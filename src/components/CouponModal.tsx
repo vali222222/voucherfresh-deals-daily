@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { mountOgadsCaptcha } from "@/lib/ogads";
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -22,11 +23,23 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
+
+  const handleRevealCode = () => {
+    setCodeRevealed(true);
+    
+    // Mount OGAds captcha after 300ms
+    setTimeout(() => {
+      if (containerRef.current) {
+        mountOgadsCaptcha(containerRef.current);
+      }
+    }, 300);
+  };
 
   // Reset state la fiecare deschidere
   useEffect(() => {
@@ -98,10 +111,10 @@ export const CouponModal = ({
 
         {/* Reveal Code */}
         <div className="px-6 py-4">
-          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
+          <div ref={containerRef} className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={() => setCodeRevealed(true)}
+                onClick={handleRevealCode}
                 className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
