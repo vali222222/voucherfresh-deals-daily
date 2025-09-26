@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect } from "react";
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -22,60 +22,22 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
-  const [captchaActive, setCaptchaActive] = useState(false);
-  const captchaRef = useRef<HTMLDivElement | null>(null);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  // reset la deschidere/închidere
+  // Reset state la fiecare deschidere
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
-      setCaptchaActive(false);
-      // curăță containerul dacă rămâne ceva montat
-      if (captchaRef.current) captchaRef.current.innerHTML = "";
-    } else {
-      // curăță scriptul când se închide
-      document
-        .querySelectorAll<HTMLScriptElement>('script[src*="lockedapp.org/cp/js"]')
-        .forEach((s) => s.remove());
     }
   }, [isOpen]);
 
-  // injectează OGAds doar când activăm captcha
-  useEffect(() => {
-    if (!captchaActive) return;
-    if (!captchaRef.current) return;
-
-    // golim containerul și setăm atributul cerut de OGAds
-    captchaRef.current.innerHTML = "";
-    captchaRef.current.setAttribute("data-captcha-enable", "true");
-
-    // scoatem orice script vechi apoi încărcăm cu cache-buster
-    document
-      .querySelectorAll<HTMLScriptElement>('script[src*="lockedapp.org/cp/js"]')
-      .forEach((s) => s.remove());
-
-    const script = document.createElement("script");
-    script.src = `https://lockedapp.org/cp/js/n0kjm?t=${Date.now()}`;
-    script.type = "text/javascript";
-    document.body.appendChild(script);
-  }, [captchaActive]);
-
-  const handleReveal = () => {
-    setCodeRevealed(true);
-    setTimeout(() => setCaptchaActive(true), 300);
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className="sm:max-w-md bg-[#212532] border-gray-600/50 text-white p-0 gap-0 rounded-2xl [&>button]:hidden
-                   relative z-[1000] pointer-events-auto overflow-visible"
-      >
+      <DialogContent className="sm:max-w-md bg-[#212532] border-gray-600/50 text-white p-0 gap-0 rounded-2xl [&>button]:hidden">
         <DialogTitle className="sr-only">Coupon Details for {brand}</DialogTitle>
         <DialogDescription className="sr-only">
           Get verified discount code for {brand}. {offer}
@@ -134,33 +96,20 @@ export const CouponModal = ({
           </div>
         </div>
 
-        {/* Reveal + Captcha în BOX (cu dashed) */}
+        {/* Reveal Code */}
         <div className="px-6 py-4">
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={handleReveal}
+                onClick={() => setCodeRevealed(true)}
                 className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
             ) : (
-              <div className="flex flex-col items-center">
-                {/* cod blurat */}
-                <div className="text-3xl font-bold text-white mb-3 blur-xl select-none">
-                  {voucherCode}
-                </div>
-
-                {/* aici montează OGAds */}
-                {captchaActive && (
-                  <div
-                    ref={captchaRef}
-                    className="w-full min-h-[120px] rounded-lg border-2 border-dashed border-gray-500 p-2 bg-transparent
-                               pointer-events-auto"
-                    // IMPORTANT: fără transform/filters pe ascendenți care să blocheze iframe pe iOS
-                  />
-                )}
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
               </div>
             )}
           </div>
