@@ -8,8 +8,8 @@ interface CouponModalProps {
   logo: string;
   brand: string;
   offer: string;
-  usedCount: number;
-  remainingCount: number;
+  usedToday: number;
+  timeLeft: number;
 }
 
 export const CouponModal = ({
@@ -18,11 +18,10 @@ export const CouponModal = ({
   logo,
   brand,
   offer,
-  usedCount,
-  remainingCount,
+  usedToday,
+  timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
-  const [showCaptcha, setShowCaptcha] = useState(false);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -33,21 +32,8 @@ export const CouponModal = ({
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
-      setShowCaptcha(false);
     }
   }, [isOpen]);
-
-  // Injectăm script-ul OGAds doar când e nevoie
-  useEffect(() => {
-    if (!showCaptcha) return;
-
-    if (!document.querySelector('script[src*="pagelocked.org"]')) {
-      const s = document.createElement("script");
-      s.src = "https://pagelocked.org/cp/js/n0kjm"; // <-- locker OGAds
-      s.async = true;
-      document.body.appendChild(s);
-    }
-  }, [showCaptcha]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -90,10 +76,10 @@ export const CouponModal = ({
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Clock className="w-5 h-5 text-purple-400" />
                 <span className="text-3xl font-bold text-purple-400 tabular-nums inline-block min-w-[60px] text-center">
-                  {usedCount}
+                  {usedToday}
                 </span>
               </div>
-              <p className="text-gray-400 text-sm font-medium">Used</p>
+              <p className="text-gray-400 text-sm font-medium">Used Today</p>
             </div>
 
             <div className="w-px h-12 bg-gray-600" />
@@ -102,10 +88,10 @@ export const CouponModal = ({
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Users className="w-5 h-5 text-orange-400" />
                 <span className="text-3xl font-bold text-orange-400 tabular-nums inline-block min-w-[60px] text-center">
-                  {remainingCount}
+                  {timeLeft}
                 </span>
               </div>
-              <p className="text-gray-400 text-sm font-medium">Uses Remaining</p>
+              <p className="text-gray-400 text-sm font-medium">Hours Left</p>
             </div>
           </div>
         </div>
@@ -115,22 +101,12 @@ export const CouponModal = ({
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={() => {
-                  setCodeRevealed(true);
-                  setShowCaptcha(true);
-                }}
+                onClick={() => setCodeRevealed(true)}
                 className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
-            ) : showCaptcha ? (
-              <div
-                id="captcha-container"
-                data-captcha-enable="true"
-                style={{ all: "unset" }}
-                className="w-full h-auto flex items-center justify-center"
-              />
             ) : (
               <div className="text-center">
                 <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
