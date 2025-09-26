@@ -76,7 +76,18 @@ export const CouponModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-[#212532] border-gray-600/50 text-white p-0 gap-0 rounded-2xl [&>button]:hidden">
+      <DialogContent 
+        className="sm:max-w-md bg-[#212532] border-gray-600/50 text-white p-0 gap-0 rounded-2xl [&>button]:hidden" 
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => {
+          // Permite interacțiunea cu CAPTCHA
+          const target = e.target as HTMLElement;
+          if (target.closest('[data-captcha-enable="true"]')) {
+            e.preventDefault();
+            return false;
+          }
+        }}
+      >
         <DialogTitle className="sr-only">Coupon Details for {brand}</DialogTitle>
         <DialogDescription className="sr-only">
           Get verified discount code for {brand}. {offer}
