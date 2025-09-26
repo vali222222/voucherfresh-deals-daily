@@ -108,7 +108,7 @@ export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCard
           <div className="captcha-container">
             <div
               ref={captchaMountRef}
-              className="w-full min-h-[200px] max-h-[250px] pointer-events-auto bg-[#1a1c24] rounded-xl border border-gray-600/50 overflow-hidden"
+              className="w-full min-h-[150px] max-h-[180px] pointer-events-auto bg-[#1a1c24] rounded-xl border border-gray-600/50 overflow-hidden"
               style={{ position: "relative" }}
             />
             
