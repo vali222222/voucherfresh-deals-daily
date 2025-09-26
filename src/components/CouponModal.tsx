@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -22,36 +22,85 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
+  const prevOverflowRef = useRef<string>("");
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  // Reset la fiecare deschidere
+  const removeOverlay = () => {
+    const o = document.getElementById("ogads-overlay");
+    if (o) o.remove();
+    document.body.style.overflow = prevOverflowRef.current || "";
+  };
+
+  // Reset + cleanup la fiecare deschidere/închidere
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
+    } else {
+      removeOverlay();
     }
   }, [isOpen]);
+
+  // Cleanup la demontarea componentului
+  useEffect(() => {
+    return () => removeOverlay();
+  }, []);
 
   const handleReveal = () => {
     setCodeRevealed(true);
 
     setTimeout(() => {
-      // creăm overlay-ul pentru captcha
-      const div = document.createElement("div");
-      div.setAttribute("data-captcha-enable", "true");
-      div.style.position = "fixed";
-      div.style.top = "0";
-      div.style.left = "0";
-      div.style.width = "100%";
-      div.style.height = "100%";
-      div.style.zIndex = "9999";
-      div.style.background = "rgba(0,0,0,0.6)";
-      document.body.appendChild(div);
+      // overlay full-screen centrat
+      const overlay = document.createElement("div");
+      overlay.id = "ogads-overlay";
+      overlay.style.position = "fixed";
+      overlay.style.inset = "0";
+      overlay.style.zIndex = "9999";
+      overlay.style.background = "rgba(0,0,0,0.6)";
+      overlay.style.display = "flex";
+      overlay.style.alignItems = "center";
+      overlay.style.justifyContent = "center";
+      overlay.style.padding = "16px";
+      overlay.style.boxSizing = "border-box";
 
-      // injectăm scriptul OGAds
+      // container target pentru OGAds
+      const target = document.createElement("div");
+      target.setAttribute("data-captcha-enable", "true");
+      target.style.width = "100%";
+      target.style.maxWidth = "480px";
+      target.style.pointerEvents = "auto";
+      target.style.background = "transparent";
+
+      // buton X pentru închis overlay
+      const closeBtn = document.createElement("button");
+      closeBtn.setAttribute("aria-label", "Close captcha");
+      closeBtn.innerHTML = "✕";
+      closeBtn.style.position = "absolute";
+      closeBtn.style.top = "12px";
+      closeBtn.style.right = "12px";
+      closeBtn.style.width = "36px";
+      closeBtn.style.height = "36px";
+      closeBtn.style.borderRadius = "9999px";
+      closeBtn.style.border = "none";
+      closeBtn.style.cursor = "pointer";
+      closeBtn.style.fontSize = "20px";
+      closeBtn.style.color = "#fff";
+      closeBtn.style.background = "rgba(255,255,255,0.2)";
+      closeBtn.style.backdropFilter = "blur(4px)";
+      closeBtn.onclick = removeOverlay;
+
+      overlay.appendChild(target);
+      overlay.appendChild(closeBtn);
+      document.body.appendChild(overlay);
+
+      // blochează scroll-ul în spate
+      prevOverflowRef.current = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+
+      // injectează scriptul OGAds
       const script = document.createElement("script");
       script.src = "https://lockedapp.org/cp/js/n0kjm";
       script.type = "text/javascript";
@@ -70,7 +119,7 @@ export const CouponModal = ({
         {/* Header */}
         <div className="p-6 pb-4 relative">
           <button
-            onClick={onClose}
+            onClick={() => { removeOverlay(); onClose(); }}
             className="absolute right-4 top-4 w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors"
           >
             <X className="w-4 h-4" />
@@ -133,7 +182,7 @@ export const CouponModal = ({
               </button>
             ) : (
               <div className="text-center">
-                {/* Cod blurat */}
+                {/* Cod blurat (rămâne blurat cât timp e captcha) */}
                 <div className="text-3xl font-bold text-white mb-4 blur-xl select-none">
                   {voucherCode}
                 </div>
