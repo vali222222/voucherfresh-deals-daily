@@ -2,28 +2,25 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
 
-// Extend window interface to include potential captcha objects
-declare global {
-  interface Window {
-    OGAds?: any;
-    ogads?: any;
-    OGADS?: any;
-    captcha?: any;
-    adcashMacros?: any;
-  }
-}
-
 interface CouponModalProps {
   isOpen: boolean;
   onClose: () => void;
   logo: string;
   brand: string;
   offer: string;
-  usedToday: number;
-  timeLeft: number;
+  usedCount: number;
+  remainingCount: number;
 }
 
-export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, timeLeft }: CouponModalProps) => {
+export const CouponModal = ({
+  isOpen,
+  onClose,
+  logo,
+  brand,
+  offer,
+  usedCount,
+  remainingCount,
+}: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
 
@@ -32,7 +29,7 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  // Reset states când modalul se deschide
+  // Reset state la fiecare deschidere
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
@@ -40,13 +37,13 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
     }
   }, [isOpen]);
 
-  // Injectăm script-ul doar când vrem captcha
+  // Injectăm script-ul OGAds doar când e nevoie
   useEffect(() => {
     if (!showCaptcha) return;
 
     if (!document.querySelector('script[src*="pagelocked.org"]')) {
       const s = document.createElement("script");
-      s.src = "https://pagelocked.org/cp/js/n0kjm"; // locker-ul OGAds
+      s.src = "https://pagelocked.org/cp/js/n0kjm"; // <-- locker OGAds
       s.async = true;
       document.body.appendChild(s);
     }
@@ -71,7 +68,7 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
 
           <div className="flex items-start gap-4">
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md">
-              <img src={logo} alt={`${brand} logo`} width="48" height="48" className="object-contain" />
+              <img src={logo} alt={`${brand} logo`} width={48} height={48} className="object-contain" />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -92,20 +89,20 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Clock className="w-5 h-5 text-purple-400" />
-                <span className="text-3xl font-bold text-purple-400 inline-block min-w-badge text-center">
-                  {usedToday}
+                <span className="text-3xl font-bold text-purple-400 tabular-nums inline-block min-w-[60px] text-center">
+                  {usedCount}
                 </span>
               </div>
               <p className="text-gray-400 text-sm font-medium">Used</p>
             </div>
 
-            <div className="w-px h-12 bg-gray-600"></div>
+            <div className="w-px h-12 bg-gray-600" />
 
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Users className="w-5 h-5 text-orange-400" />
-                <span className="text-3xl font-bold text-orange-400 inline-block min-w-badge text-center">
-                  {timeLeft}
+                <span className="text-3xl font-bold text-orange-400 tabular-nums inline-block min-w-[60px] text-center">
+                  {remainingCount}
                 </span>
               </div>
               <p className="text-gray-400 text-sm font-medium">Uses Remaining</p>
@@ -113,24 +110,26 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
           </div>
         </div>
 
-        {/* Reveal Code */}
+        {/* Reveal Code + Captcha */}
         <div className="px-6 py-4">
-          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
+          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
                 onClick={() => {
                   setCodeRevealed(true);
                   setShowCaptcha(true);
                 }}
-                className="w-full min-w-button min-h-button bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
             ) : showCaptcha ? (
               <div
+                id="captcha-container"
                 data-captcha-enable="true"
-                className="w-full min-h-[80px] flex items-center justify-center"
+                style={{ all: "unset" }}
+                className="w-full h-auto flex items-center justify-center"
               />
             ) : (
               <div className="text-center">
@@ -145,8 +144,7 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
           <div className="bg-gray-700/50 rounded-xl p-4">
             <h3 className="text-white font-bold text-lg mb-2">Offer Details:</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and
-              receive immediate savings on various products.
+              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and receive immediate savings on various products.
             </p>
           </div>
         </div>
