@@ -41,13 +41,20 @@ export const CouponModal = ({
 
   // Funcție pentru încărcarea dinamică a script-ului
   const loadCaptchaScript = () => {
-    if (scriptLoaded) return;
+    // Verifică dacă script-ul există deja
+    if (document.querySelector('script[src="https://applocked.org/cp/js/n0kjm"]')) {
+      setScriptLoaded(true);
+      return;
+    }
     
     const script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = 'https://applocked.org/cp/js/n0kjm';
     script.onload = () => {
       setScriptLoaded(true);
+    };
+    script.onerror = () => {
+      console.error('Failed to load captcha script');
     };
     document.body.appendChild(script);
   };
