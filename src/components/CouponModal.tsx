@@ -22,6 +22,8 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [captchaCompleted, setCaptchaCompleted] = useState(false);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -32,8 +34,28 @@ export const CouponModal = ({
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
+      setScriptLoaded(false);
+      setCaptchaCompleted(false);
     }
   }, [isOpen]);
+
+  // Funcție pentru încărcarea dinamică a script-ului
+  const loadCaptchaScript = () => {
+    if (scriptLoaded) return;
+    
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://applocked.org/cp/js/n0kjm';
+    script.onload = () => {
+      setScriptLoaded(true);
+    };
+    document.body.appendChild(script);
+  };
+
+  const handleRevealCode = () => {
+    setCodeRevealed(true);
+    loadCaptchaScript();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -101,15 +123,27 @@ export const CouponModal = ({
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={() => setCodeRevealed(true)}
+                onClick={handleRevealCode}
                 className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
+            ) : !captchaCompleted ? (
+              <div className="text-center">
+                <p className="text-white mb-4">Complete CAPTCHA to reveal code:</p>
+                <div data-captcha-enable="true"></div>
+                <button
+                  onClick={() => setCaptchaCompleted(true)}
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-sm"
+                >
+                  I completed the CAPTCHA
+                </button>
+              </div>
             ) : (
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
+                <div className="text-3xl font-bold text-white mb-2 tracking-wider">{voucherCode}</div>
+                <p className="text-green-400 text-sm">✓ Code revealed successfully!</p>
               </div>
             )}
           </div>
