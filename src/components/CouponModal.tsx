@@ -26,12 +26,13 @@ interface CouponModalProps {
 export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, timeLeft }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
+
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  // Reset states when modal opens
+  // Reset states când modalul se deschide
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
@@ -45,7 +46,7 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
 
     if (!document.querySelector('script[src*="pagelocked.org"]')) {
       const s = document.createElement("script");
-      s.src = "https://pagelocked.org/cp/js/n0kjm"; // <-- locker-ul tău OGAds
+      s.src = "https://pagelocked.org/cp/js/n0kjm"; // locker-ul OGAds
       s.async = true;
       document.body.appendChild(s);
     }
@@ -69,7 +70,6 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
           </button>
 
           <div className="flex items-start gap-4">
-            {/* Logo fix CLS */}
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md">
               <img src={logo} alt={`${brand} logo`} width="48" height="48" className="object-contain" />
             </div>
@@ -92,7 +92,6 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Clock className="w-5 h-5 text-purple-400" />
-                {/* Badge fix CLS */}
                 <span className="text-3xl font-bold text-purple-400 inline-block min-w-badge text-center">
                   {usedToday}
                 </span>
@@ -105,7 +104,6 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Users className="w-5 h-5 text-orange-400" />
-                {/* Badge fix CLS */}
                 <span className="text-3xl font-bold text-orange-400 inline-block min-w-badge text-center">
                   {timeLeft}
                 </span>
@@ -115,9 +113,9 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
           </div>
         </div>
 
-        {/* Reveal Code Button */}
+        {/* Reveal Code */}
         <div className="px-6 py-4">
-          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[120px] max-w-xs mx-auto">
+          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
                 onClick={() => {
@@ -130,16 +128,13 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
                 <span>Reveal Code</span>
               </button>
             ) : showCaptcha ? (
-              <div className="relative w-full h-[200px] flex items-center justify-center z-50">
-                <div
-                  data-captcha-enable="true"
-                  className="w-full h-full flex items-center justify-center"
-                  style={{ zIndex: 9999 }}
-                />
-              </div>
+              <div
+                data-captcha-enable="true"
+                className="w-full min-h-[80px] flex items-center justify-center"
+              />
             ) : (
-              <div className="absolute inset-3 flex items-center justify-center">
-                <div className="text-3xl font-bold text-white blur-xl select-none">{voucherCode}</div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
               </div>
             )}
           </div>
