@@ -163,8 +163,8 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
 
         {/* Reveal Code Button */}
         <div className="px-6 py-4">
-          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
-            {!codeRevealed ? (
+          {!codeRevealed ? (
+            <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
               <button
                 onClick={() => setCodeRevealed(true)}
                 className="w-full min-w-button min-h-button bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
@@ -172,21 +172,23 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, ti
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
-            ) : showCaptcha ? (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <iframe 
-                  src="/locker-host.html" 
-                  className="w-full h-full min-h-[80px] border-0 bg-transparent"
-                  style={{ colorScheme: 'normal' }}
-                  allow="script-src 'unsafe-inline'"
-                />
-              </div>
-            ) : (
+            </div>
+          ) : showCaptcha ? (
+            <div className="w-full min-h-[200px] flex items-center justify-center">
+              <iframe 
+                src="/locker-host.html" 
+                className="w-full h-[200px] border-0 bg-transparent rounded-xl"
+                style={{ colorScheme: 'normal' }}
+                allow="script-src 'unsafe-inline'"
+              />
+            </div>
+          ) : (
+            <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
               <div className="absolute inset-3 flex items-center justify-center">
                 <div className="text-3xl font-bold text-white blur-xl select-none">{voucherCode}</div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Offer Details */}
