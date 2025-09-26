@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Verify</title>
+  <style>
+    :root{color-scheme:dark}
+    body{margin:0;background:#0b1220;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+    .wrap{width:min(560px,92vw)}
+    .top{display:flex;justify-content:flex-end;margin-bottom:8px}
+    .x{width:36px;height:36px;border:none;border-radius:9999px;background:rgba(255,255,255,.18);color:#fff;font-size:18px;cursor:pointer}
+    .box{background:#111827;border-radius:16px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    .dashed{border:2px dashed #6b7280;border-radius:12px;padding:8px;background:transparent}
+    .actions{margin-top:10px;display:flex;gap:8px;justify-content:flex-end}
+    .btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer}
+    .secondary{background:#374151;color:#fff}
+    .primary{background:#22c55e;color:#0b1220;font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <button class="x" onclick="closeMe()">✕</button>
+    </div>
+    <div class="box">
+      <div class="dashed">
+        <div data-captcha-enable="true"></div>
+      </div>
+      <div class="actions">
+        <button class="secondary" onclick="closeMe()">Back</button>
+        <button class="primary" onclick="done()">I’m done</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const url = new URL(location.href);
+    const embed = url.searchParams.get('embed') === '1';
+
+    function closeMe(){
+      if (embed) {
+        parent.postMessage({ type: 'vf:close' }, '*');
+      } else {
+        const ret = url.searchParams.get('return');
+        if (ret) location.href = decodeURIComponent(ret);
+        else history.length>1 ? history.back() : location.href='/';
+      }
+    }
+
+    function done(){
+      if (embed) {
+        parent.postMessage({ type: 'vf:done' }, '*');
+      } else {
+        sessionStorage.setItem('vf-verified','1');
+        closeMe();
+      }
+    }
+  </script>
+
+  <!-- OGAds -->
+  <script src="https://pagelocked.org/cp/js/n0kjm"></script>
+</body>
+</html>
