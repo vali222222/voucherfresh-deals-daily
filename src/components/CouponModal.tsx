@@ -56,8 +56,9 @@ export const CouponModal = ({
 
   return (
     <>
+      {/* MODAL */}
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-md bg-[#212532] border-gray-600/50 text-white p-0 gap-0 rounded-2xl [&>button]:hidden relative z-[1000]">
+        <DialogContent className="sm:max-w-md bg-[#212532] border-gray-600/50 text-white p-0 gap-0 rounded-2xl [&>button]:hidden">
           <DialogTitle className="sr-only">Coupon Details for {brand}</DialogTitle>
           <DialogDescription className="sr-only">
             Get verified discount code for {brand}. {offer}
@@ -150,7 +151,7 @@ export const CouponModal = ({
         </DialogContent>
       </Dialog>
 
-      {/* Captcha Overlay peste tot ecranul */}
+      {/* Captcha Overlay separat */}
       {captchaActive && (
         <div
           data-captcha-enable="true"
