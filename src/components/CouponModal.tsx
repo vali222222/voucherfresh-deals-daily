@@ -28,12 +28,17 @@ export const CouponModal = ({
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  // Reset state la fiecare deschidere
   useEffect(() => {
-    if (isOpen) {
-      setCodeRevealed(false);
-    }
+    if (isOpen) setCodeRevealed(false);
   }, [isOpen]);
+
+  const handleReveal = () => {
+    setCodeRevealed(true);                    // arată codul blurat
+    setTimeout(() => {
+      const ret = encodeURIComponent(window.location.href);
+      window.location.href = `/verify.html?return=${ret}`;  // mergi la captcha page
+    }, 300);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -101,7 +106,7 @@ export const CouponModal = ({
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={() => setCodeRevealed(true)}
+                onClick={handleReveal}
                 className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
