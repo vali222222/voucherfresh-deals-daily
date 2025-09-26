@@ -20,19 +20,11 @@ interface CouponModalProps {
   logo: string;
   brand: string;
   offer: string;
-  usedCount: number;        // ✅ primit din card
-  remainingCount: number;   // ✅ primit din card
 }
 
-export const CouponModal = ({
-  isOpen,
-  onClose,
-  logo,
-  brand,
-  offer,
-  usedCount,
-  remainingCount,
-}: CouponModalProps) => {
+export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModalProps) => {
+  const [usedCount] = useState(() => Math.floor(Math.random() * (300 - 100 + 1)) + 100);
+  const [remainingCount] = useState(() => Math.floor(Math.random() * (30 - 10 + 1)) + 10);
   const [codeRevealed, setCodeRevealed] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [voucherCode] = useState(() => {
@@ -54,29 +46,34 @@ export const CouponModal = ({
         setShowCaptcha(true);
 
         setTimeout(() => {
-          const og =
+          console.log("Attempting to reinitialize OGAds captcha...");
+          const ogadsObj =
             (window as any).OGAds ||
             (window as any).ogads ||
             (window as any).OGADS ||
             (window as any).adcashMacros;
 
-          try {
-            og?.init?.();
-            og?.scan?.();
-            og?.render?.();
-            og?.execute?.();
-            og?.refresh?.();
-            og?.reload?.();
-          } catch {}
+          if (ogadsObj) {
+            try {
+              ogadsObj.init?.();
+              ogadsObj.scan?.();
+              ogadsObj.render?.();
+              ogadsObj.execute?.();
+              ogadsObj.refresh?.();
+              ogadsObj.reload?.();
+            } catch (e) {
+              console.log("Error calling OGAds methods:", e);
+            }
+          }
 
-          const script = document.querySelector('script[src*="pagelocked.org"]') as HTMLScriptElement | null;
+          const script = document.querySelector('script[src*="pagelocked.org"]');
           if (script) {
             const newScript = document.createElement("script");
             newScript.src = script.getAttribute("src") || "";
             newScript.async = true;
             document.head.appendChild(newScript);
             setTimeout(() => {
-              try { document.head.removeChild(newScript); } catch {}
+              document.head.removeChild(newScript);
             }, 2000);
           }
 
@@ -118,8 +115,9 @@ export const CouponModal = ({
           </button>
 
           <div className="flex items-start gap-4">
+            {/* Logo fix CLS (dimensiuni rezervate) */}
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md">
-              <img src={logo} alt={`${brand} logo`} width={48} height={48} className="object-contain" />
+              <img src={logo} alt={`${brand} logo`} width="48" height="48" className="object-contain" />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -134,25 +132,27 @@ export const CouponModal = ({
           </div>
         </div>
 
-        {/* Stats (folosim props-urile) */}
+        {/* Stats */}
         <div className="px-6 py-4">
           <div className="flex items-center justify-center gap-8">
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Clock className="w-5 h-5 text-purple-400" />
-                <span className="text-3xl font-bold text-purple-400 tabular-nums inline-block min-w-[60px] text-center">
+                {/* Badge fix CLS */}
+                <span className="text-3xl font-bold text-purple-400 inline-block min-w-badge text-center">
                   {usedCount}
                 </span>
               </div>
               <p className="text-gray-400 text-sm font-medium">Used</p>
             </div>
 
-            <div className="w-px h-12 bg-gray-600" />
+            <div className="w-px h-12 bg-gray-600"></div>
 
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Users className="w-5 h-5 text-orange-400" />
-                <span className="text-3xl font-bold text-orange-400 tabular-nums inline-block min-w-[60px] text-center">
+                {/* Badge fix CLS */}
+                <span className="text-3xl font-bold text-orange-400 inline-block min-w-badge text-center">
                   {remainingCount}
                 </span>
               </div>
@@ -167,14 +167,14 @@ export const CouponModal = ({
             {!codeRevealed ? (
               <button
                 onClick={() => setCodeRevealed(true)}
-                className="w-full min-w-[120px] min-h-[40px] bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                className="w-full min-w-button min-h-button bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
             ) : showCaptcha ? (
               <div className="absolute inset-3 flex items-center justify-center">
-                <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center" />
+                <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center"></div>
               </div>
             ) : (
               <div className="text-center">
@@ -189,7 +189,8 @@ export const CouponModal = ({
           <div className="bg-gray-700/50 rounded-xl p-4">
             <h3 className="text-white font-bold text-lg mb-2">Offer Details:</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and receive immediate savings on various products.
+              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and
+              receive immediate savings on various products.
             </p>
           </div>
         </div>
