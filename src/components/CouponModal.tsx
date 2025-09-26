@@ -109,7 +109,7 @@ export const CouponModal = ({
               </button>
             ) : (
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
+                <div data-captcha-enable="true"></div>
               </div>
             )}
           </div>
