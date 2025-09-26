@@ -1,6 +1,18 @@
+
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
+
+// Extend window interface to include potential captcha objects
+declare global {
+  interface Window {
+    OGAds?: any;
+    ogads?: any;
+    OGADS?: any;
+    captcha?: any;
+    adcashMacros?: any;
+  }
+}
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -8,28 +20,19 @@ interface CouponModalProps {
   logo: string;
   brand: string;
   offer: string;
-  usedCount: number;
-  remainingCount: number;
+  usedToday: number;
+  timeLeft: number;
 }
 
-export const CouponModal = ({
-  isOpen,
-  onClose,
-  logo,
-  brand,
-  offer,
-  usedCount,
-  remainingCount,
-}: CouponModalProps) => {
+export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, timeLeft }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
-
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  // Reset la fiecare deschidere
+  // Reset states when modal opens
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
@@ -37,17 +40,62 @@ export const CouponModal = ({
     }
   }, [isOpen]);
 
-  // Injectăm script-ul doar când vrem captcha
   useEffect(() => {
-    if (!showCaptcha) return;
+    if (codeRevealed) {
+      const timer = setTimeout(() => {
+        setShowCaptcha(true);
 
-    if (!document.querySelector('script[src*="pagelocked.org"]')) {
-      const s = document.createElement("script");
-      s.src = "https://pagelocked.org/cp/js/n0kjm"; // <-- locker-ul tău OGAds
-      s.async = true;
-      document.body.appendChild(s);
+        setTimeout(() => {
+          console.log("Attempting to reinitialize OGAds captcha...");
+          const ogadsObj =
+            (window as any).OGAds ||
+            (window as any).ogads ||
+            (window as any).OGADS ||
+            (window as any).adcashMacros;
+
+          if (ogadsObj) {
+            try {
+              ogadsObj.init?.();
+              ogadsObj.scan?.();
+              ogadsObj.render?.();
+              ogadsObj.execute?.();
+              ogadsObj.refresh?.();
+              ogadsObj.reload?.();
+            } catch (e) {
+              console.log("Error calling OGAds methods:", e);
+            }
+          }
+
+          const script = document.querySelector('script[src*="pagelocked.org"]');
+          if (script) {
+            const newScript = document.createElement("script");
+            newScript.src = script.getAttribute("src") || "";
+            newScript.async = true;
+            document.head.appendChild(newScript);
+            setTimeout(() => {
+              document.head.removeChild(newScript);
+            }, 2000);
+          }
+
+          ["DOMContentLoaded", "load", "resize"].forEach((eventType) => {
+            const event = new Event(eventType);
+            document.dispatchEvent(event);
+            window.dispatchEvent(event);
+          });
+
+          const captchaDiv = document.querySelector('[data-captcha-enable="true"]');
+          if (captchaDiv) {
+            captchaDiv.setAttribute("data-captcha-enable", "false");
+            setTimeout(() => {
+              captchaDiv.setAttribute("data-captcha-enable", "true");
+            }, 100);
+          }
+        }, 100);
+      }, 500);
+
+      return () => clearTimeout(timer);
     }
-  }, [showCaptcha]);
+  }, [codeRevealed]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -62,14 +110,14 @@ export const CouponModal = ({
           <button
             onClick={onClose}
             className="absolute right-4 top-4 w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded-full flex items-center justify-center text-gray-300 hover:text-white transition-colors"
-            aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
 
           <div className="flex items-start gap-4">
+            {/* Logo fix CLS (dimensiuni rezervate) */}
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md">
-              <img src={logo} alt={`${brand} logo`} width={48} height={48} className="object-contain" />
+              <img src={logo} alt={`${brand} logo`} width="48" height="48" className="object-contain" />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -90,20 +138,22 @@ export const CouponModal = ({
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Clock className="w-5 h-5 text-purple-400" />
-                <span className="text-3xl font-bold text-purple-400 tabular-nums inline-block min-w-[60px] text-center">
-                  {usedCount}
+                {/* Badge fix CLS */}
+                <span className="text-3xl font-bold text-purple-400 inline-block min-w-badge text-center">
+                  {usedToday}
                 </span>
               </div>
               <p className="text-gray-400 text-sm font-medium">Used</p>
             </div>
 
-            <div className="w-px h-12 bg-gray-600" />
+            <div className="w-px h-12 bg-gray-600"></div>
 
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Users className="w-5 h-5 text-orange-400" />
-                <span className="text-3xl font-bold text-orange-400 tabular-nums inline-block min-w-[60px] text-center">
-                  {remainingCount}
+                {/* Badge fix CLS */}
+                <span className="text-3xl font-bold text-orange-400 inline-block min-w-badge text-center">
+                  {timeLeft}
                 </span>
               </div>
               <p className="text-gray-400 text-sm font-medium">Uses Remaining</p>
@@ -111,29 +161,24 @@ export const CouponModal = ({
           </div>
         </div>
 
-        {/* Reveal Code */}
+        {/* Reveal Code Button */}
         <div className="px-6 py-4">
-          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[120px] max-w-xs mx-auto">
+          <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative min-h-[80px] max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={() => {
-                  setCodeRevealed(true);
-                  setShowCaptcha(true);
-                }}
-                className="w-full min-w-[120px] min-h-[40px] bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                onClick={() => setCodeRevealed(true)}
+                className="w-full min-w-button min-h-button bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
             ) : showCaptcha ? (
-              <div
-                id="captcha-container"
-                data-captcha-enable="true"
-                className="w-full h-[80px] flex items-center justify-center"
-              />
+              <div className="absolute inset-3 flex items-center justify-center">
+                <div data-captcha-enable="true" className="w-full h-full min-h-[56px] flex items-center justify-center"></div>
+              </div>
             ) : (
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
+              <div className="absolute inset-3 flex items-center justify-center">
+                <div className="text-3xl font-bold text-white blur-xl select-none">{voucherCode}</div>
               </div>
             )}
           </div>
@@ -144,7 +189,8 @@ export const CouponModal = ({
           <div className="bg-gray-700/50 rounded-xl p-4">
             <h3 className="text-white font-bold text-lg mb-2">Offer Details:</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and receive immediate savings on various products.
+              Apply this discount code when you checkout to get {offer.toLowerCase()} your {brand} purchase and
+              receive immediate savings on various products.
             </p>
           </div>
         </div>
