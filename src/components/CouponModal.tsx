@@ -29,6 +29,8 @@ export const CouponModal = ({
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
+  const OGADS_SRC = "https://lockedapp.org/cp/js/n0kjm";
+
   const removeOverlay = () => {
     const o = document.getElementById("ogads-overlay");
     if (o) o.remove();
@@ -44,72 +46,105 @@ export const CouponModal = ({
     }
   }, [isOpen]);
 
-  // Cleanup la demontarea componentului
+  // Cleanup la demontare
   useEffect(() => {
     return () => removeOverlay();
   }, []);
 
+  const injectOgads = () => {
+    // încarcă scriptul OGAds (de fiecare dată e OK)
+    const script = document.createElement("script");
+    script.src = OGADS_SRC;
+    script.type = "text/javascript";
+    document.body.appendChild(script);
+  };
+
+  const openCaptchaOverlay = () => {
+    // overlay full-screen
+    const overlay = document.createElement("div");
+    overlay.id = "ogads-overlay";
+    Object.assign(overlay.style, {
+      position: "fixed",
+      inset: "0",
+      zIndex: "9999",
+      background: "rgba(0,0,0,0.6)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "16px",
+      boxSizing: "border-box",
+    });
+
+    // box centrat pentru captcha & oferte
+    const box = document.createElement("div");
+    Object.assign(box.style, {
+      position: "relative",
+      width: "100%",
+      maxWidth: "560px",
+      minHeight: "380px",
+      borderRadius: "16px",
+      background: "#111827", // gray-900
+      padding: "16px",
+      boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+      overflow: "hidden",
+    });
+    // nu închide overlay-ul când clic în box
+    box.addEventListener("click", (e) => e.stopPropagation());
+
+    // target-ul OGAds (captcha -> apoi app list)
+    const target = document.createElement("div");
+    target.setAttribute("data-captcha-enable", "true");
+    Object.assign(target.style, {
+      width: "100%",
+      height: "100%",
+      pointerEvents: "auto",
+      background: "transparent",
+    });
+
+    // buton X
+    const closeBtn = document.createElement("button");
+    closeBtn.setAttribute("aria-label", "Close captcha");
+    closeBtn.innerHTML = "✕";
+    Object.assign(closeBtn.style, {
+      position: "absolute",
+      top: "10px",
+      right: "10px",
+      width: "36px",
+      height: "36px",
+      borderRadius: "9999px",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "20px",
+      color: "#fff",
+      background: "rgba(255,255,255,0.18)",
+      backdropFilter: "blur(4px)",
+      lineHeight: "36px",
+    });
+    closeBtn.onclick = removeOverlay;
+
+    box.appendChild(closeBtn);
+    box.appendChild(target);
+    overlay.appendChild(box);
+    // click în afara box-ului închide
+    overlay.addEventListener("click", removeOverlay);
+
+    document.body.appendChild(overlay);
+
+    // blochează scroll-ul paginii
+    prevOverflowRef.current = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    // inject OGAds
+    injectOgads();
+  };
+
   const handleReveal = () => {
     setCodeRevealed(true);
-
-    setTimeout(() => {
-      // overlay full-screen centrat
-      const overlay = document.createElement("div");
-      overlay.id = "ogads-overlay";
-      overlay.style.position = "fixed";
-      overlay.style.inset = "0";
-      overlay.style.zIndex = "9999";
-      overlay.style.background = "rgba(0,0,0,0.6)";
-      overlay.style.display = "flex";
-      overlay.style.alignItems = "center";
-      overlay.style.justifyContent = "center";
-      overlay.style.padding = "16px";
-      overlay.style.boxSizing = "border-box";
-
-      // container target pentru OGAds
-      const target = document.createElement("div");
-      target.setAttribute("data-captcha-enable", "true");
-      target.style.width = "100%";
-      target.style.maxWidth = "480px";
-      target.style.pointerEvents = "auto";
-      target.style.background = "transparent";
-
-      // buton X pentru închis overlay
-      const closeBtn = document.createElement("button");
-      closeBtn.setAttribute("aria-label", "Close captcha");
-      closeBtn.innerHTML = "✕";
-      closeBtn.style.position = "absolute";
-      closeBtn.style.top = "12px";
-      closeBtn.style.right = "12px";
-      closeBtn.style.width = "36px";
-      closeBtn.style.height = "36px";
-      closeBtn.style.borderRadius = "9999px";
-      closeBtn.style.border = "none";
-      closeBtn.style.cursor = "pointer";
-      closeBtn.style.fontSize = "20px";
-      closeBtn.style.color = "#fff";
-      closeBtn.style.background = "rgba(255,255,255,0.2)";
-      closeBtn.style.backdropFilter = "blur(4px)";
-      closeBtn.onclick = removeOverlay;
-
-      overlay.appendChild(target);
-      overlay.appendChild(closeBtn);
-      document.body.appendChild(overlay);
-
-      // blochează scroll-ul în spate
-      prevOverflowRef.current = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-
-      // injectează scriptul OGAds
-      const script = document.createElement("script");
-      script.src = "https://lockedapp.org/cp/js/n0kjm";
-      script.type = "text/javascript";
-      document.body.appendChild(script);
-    }, 300);
+    setTimeout(openCaptchaOverlay, 300);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(v) => { if (!v) removeOverlay(); onClose(); }}>
       <DialogContent className="sm:max-w-md bg-[#212532] border-gray-600/50 text-white p-0 gap-0 rounded-2xl [&>button]:hidden">
         <DialogTitle className="sr-only">Coupon Details for {brand}</DialogTitle>
         <DialogDescription className="sr-only">
@@ -182,7 +217,7 @@ export const CouponModal = ({
               </button>
             ) : (
               <div className="text-center">
-                {/* Cod blurat (rămâne blurat cât timp e captcha) */}
+                {/* cod blurat (captcha se deschide deasupra, în box separat) */}
                 <div className="text-3xl font-bold text-white mb-4 blur-xl select-none">
                   {voucherCode}
                 </div>
