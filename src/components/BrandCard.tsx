@@ -108,9 +108,14 @@ export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCard
           <div className="captcha-container">
             <div
               ref={captchaMountRef}
-              className="w-full min-h-[280px] pointer-events-auto bg-[#1a1c24] rounded-xl border border-gray-600/50"
+              className="w-full min-h-[200px] max-h-[250px] pointer-events-auto bg-[#1a1c24] rounded-xl border border-gray-600/50 overflow-hidden"
               style={{ position: "relative" }}
             />
+            
+            {/* Mini tips sub captcha */}
+            <div className="mt-2 text-center">
+              <p className="text-gray-500 text-xs">💡 Tip: Complete verification to unlock your discount</p>
+            </div>
           </div>
 
           {/* Instructions & Tips - Animat */}
