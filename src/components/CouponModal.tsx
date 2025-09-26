@@ -30,6 +30,24 @@ export const CouponModal = ({
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
+  // Încărcare script global la mount
+  useEffect(() => {
+    const loadGlobalScript = () => {
+      // Verifică dacă script-ul este deja încărcat
+      const existingScript = document.querySelector('script[src="https://applocked.org/cp/js/n0kjm"]');
+      if (existingScript) return;
+
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://applocked.org/cp/js/n0kjm';
+      script.async = true;
+      script.id = 'applocked-captcha-script';
+      document.head.appendChild(script);
+    };
+
+    loadGlobalScript();
+  }, []);
+
   // Reset state la fiecare deschidere
   useEffect(() => {
     if (isOpen) {
@@ -39,39 +57,50 @@ export const CouponModal = ({
     }
   }, [isOpen]);
 
-  // Funcție pentru încărcarea dinamică a script-ului
-  const loadCaptchaScript = () => {
-    // Elimină script-urile vechi dacă există
-    const existingScripts = document.querySelectorAll('script[src="https://applocked.org/cp/js/n0kjm"]');
-    existingScripts.forEach(script => script.remove());
+  // Funcție pentru activarea captcha-ului
+  const activateCaptcha = () => {
+    setScriptLoaded(true);
     
-    // Curăță și variabilele globale problematice
-    if ((window as any).synthient_url) {
-      delete (window as any).synthient_url;
-    }
-    
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://applocked.org/cp/js/n0kjm';
-    script.onload = () => {
-      setScriptLoaded(true);
-      // Forțează reinițializarea captcha-ului
+    // Încearcă să activeze captcha-ul cu multiple metode
+    const attemptActivation = (attempt = 0) => {
+      if (attempt > 10) return; // Max 10 încercări
+      
       setTimeout(() => {
         const captchaDiv = document.querySelector('[data-captcha-enable="true"]');
+        
         if (captchaDiv && (window as any).jQuery) {
-          (window as any).jQuery(captchaDiv).trigger('captcha-reinit');
+          try {
+            // Metodă 1: Trigger custom event
+            (window as any).jQuery(captchaDiv).trigger('captcha-init');
+            
+            // Metodă 2: Activare manuală
+            if ((window as any).synthientCaptcha) {
+              (window as any).synthientCaptcha.init();
+            }
+            
+            // Metodă 3: Click pe element dacă există
+            const captchaButton = captchaDiv.querySelector('button, .captcha-button, [role="button"]');
+            if (captchaButton) {
+              (captchaButton as HTMLElement).click();
+            }
+            
+            console.log('CAPTCHA activation attempted', attempt + 1);
+          } catch (error) {
+            console.log('CAPTCHA activation error:', error);
+            attemptActivation(attempt + 1);
+          }
+        } else {
+          attemptActivation(attempt + 1);
         }
-      }, 500);
+      }, 200 * (attempt + 1)); // Delay progresiv
     };
-    script.onerror = () => {
-      console.error('Failed to load captcha script');
-    };
-    document.body.appendChild(script);
+    
+    attemptActivation();
   };
 
   const handleRevealCode = () => {
     setCodeRevealed(true);
-    loadCaptchaScript();
+    activateCaptcha();
   };
 
   return (
