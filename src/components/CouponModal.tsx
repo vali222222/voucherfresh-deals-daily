@@ -1,7 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X, CheckCircle, Clock, Users, Copy } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-import { mountOgadsCaptcha, cleanupOgadsCaptcha } from "@/lib/ogads";
+import { useState, useEffect } from "react";
 
 interface CouponModalProps {
   isOpen: boolean;
@@ -23,40 +22,18 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   });
 
-  const handleRevealCode = () => {
-    setCodeRevealed(true);
-    
-    // Mount OGAds captcha after 300ms
-    setTimeout(() => {
-      if (containerRef.current) {
-        mountOgadsCaptcha(containerRef.current);
-      }
-    }, 300);
-  };
-
   // Reset state la fiecare deschidere
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
-    } else {
-      // Clean up captcha when modal closes
-      cleanupOgadsCaptcha();
     }
   }, [isOpen]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      cleanupOgadsCaptcha();
-    };
-  }, []);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -124,15 +101,22 @@ export const CouponModal = ({
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={handleRevealCode}
+                onClick={() => setCodeRevealed(true)}
                 className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
             ) : (
-              <div ref={containerRef} className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-2">{voucherCode}</div>
+                <button 
+                  onClick={() => navigator.clipboard.writeText(voucherCode)}
+                  className="text-neon-green text-sm hover:text-neon-green/80 transition-colors flex items-center gap-1 mx-auto"
+                >
+                  <Copy className="w-3 h-3" />
+                  Copy Code
+                </button>
               </div>
             )}
           </div>
