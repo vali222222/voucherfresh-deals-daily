@@ -104,3 +104,8 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Fix iOS tap bug for iframes under transform/backdrop-filter while captcha is active */
+body.captcha-active [data-radix-dialog-content] { transform: none !important; }
+body.captcha-active [data-radix-dialog-overlay] { backdrop-filter: none !important; }
+body.captcha-active [data-captcha-enable] { pointer-events: auto !important; }

@@ -45,6 +45,9 @@ export const CouponModal = ({
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
+    } else {
+      // Clean up captcha when modal closes
+      document.body.classList.remove("captcha-active");
     }
   }, [isOpen]);
 

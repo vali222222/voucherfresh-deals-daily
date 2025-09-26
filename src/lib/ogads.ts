@@ -6,6 +6,9 @@ export const mountOgadsCaptcha = (el: HTMLElement): void => {
   // Set the required attribute
   el.setAttribute("data-captcha-enable", "true");
   
+  // Add body class for iOS fix
+  document.body.classList.add("captcha-active");
+  
   // Create and append new script
   const script = document.createElement("script");
   script.type = "text/javascript";
