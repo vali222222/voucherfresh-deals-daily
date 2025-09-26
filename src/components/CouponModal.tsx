@@ -22,6 +22,7 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
+  const [captchaActive, setCaptchaActive] = useState(false);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -32,8 +33,26 @@ export const CouponModal = ({
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
+      setCaptchaActive(false);
     }
   }, [isOpen]);
+
+  // Încarcă scriptul OGAds când activăm captcha
+  useEffect(() => {
+    if (captchaActive) {
+      const script = document.createElement("script");
+      script.src = "https://lockedapp.org/cp/js/n0kjm";
+      script.type = "text/javascript";
+      document.body.appendChild(script);
+    }
+  }, [captchaActive]);
+
+  const handleReveal = () => {
+    setCodeRevealed(true);
+    setTimeout(() => {
+      setCaptchaActive(true);
+    }, 300);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -96,12 +115,12 @@ export const CouponModal = ({
           </div>
         </div>
 
-        {/* Reveal Code */}
+        {/* Reveal Code + Captcha */}
         <div className="px-6 py-4">
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
               <button
-                onClick={() => setCodeRevealed(true)}
+                onClick={handleReveal}
                 className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 <Copy className="w-4 h-4" />
@@ -109,7 +128,15 @@ export const CouponModal = ({
               </button>
             ) : (
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
+                {/* Cod blurat */}
+                <div className="text-3xl font-bold text-white mb-4 blur-xl select-none">
+                  {voucherCode}
+                </div>
+
+                {/* Captcha după 300ms */}
+                {captchaActive && (
+                  <div data-captcha-enable="true" className="w-full text-center"></div>
+                )}
               </div>
             )}
           </div>
