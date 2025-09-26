@@ -22,6 +22,7 @@ export const CouponModal = ({
   timeLeft,
 }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
+  const [captchaCompleted, setCaptchaCompleted] = useState(false);
 
   const [voucherCode] = useState(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -32,6 +33,7 @@ export const CouponModal = ({
   useEffect(() => {
     if (isOpen) {
       setCodeRevealed(false);
+      setCaptchaCompleted(false);
     }
   }, [isOpen]);
 
@@ -107,9 +109,36 @@ export const CouponModal = ({
                 <Copy className="w-4 h-4" />
                 <span>Reveal Code</span>
               </button>
+            ) : !captchaCompleted ? (
+              <div className="bg-white rounded-lg p-4 text-center">
+                <div className="flex items-center gap-3 justify-center">
+                  <div className="w-6 h-6 border-2 border-gray-400 rounded bg-white flex items-center justify-center cursor-pointer hover:border-blue-500 transition-colors"
+                       onClick={() => setCaptchaCompleted(true)}>
+                    {captchaCompleted && <CheckCircle className="w-4 h-4 text-green-500" />}
+                  </div>
+                  <span className="text-gray-800 text-sm font-medium">I'm not a robot</span>
+                  <div className="flex flex-col items-center ml-2">
+                    <div className="text-xs text-gray-500">reCAPTCHA</div>
+                    <div className="flex gap-1 mt-1">
+                      <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
+                      <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                      <div className="w-1 h-1 bg-yellow-500 rounded-full"></div>
+                      <div className="w-1 h-1 bg-red-500 rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-xs text-gray-500 mt-2">Privacy - Terms</div>
+              </div>
             ) : (
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2 blur-xl select-none">{voucherCode}</div>
+                <div className="text-3xl font-bold text-white mb-2">{voucherCode}</div>
+                <button 
+                  onClick={() => navigator.clipboard.writeText(voucherCode)}
+                  className="text-neon-green text-sm hover:text-neon-green/80 transition-colors flex items-center gap-1 mx-auto"
+                >
+                  <Copy className="w-3 h-3" />
+                  Copy Code
+                </button>
               </div>
             )}
           </div>
