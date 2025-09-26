@@ -96,7 +96,7 @@ export const CouponModal = ({
           </div>
         </div>
 
-        {/* Reveal Code + Captcha */}
+        {/* Reveal Code */}
         <div className="px-6 py-4">
           <div className="border-2 border-dashed border-gray-600 rounded-xl p-3 relative max-w-xs mx-auto">
             {!codeRevealed ? (
