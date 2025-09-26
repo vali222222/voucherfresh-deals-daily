@@ -133,12 +133,6 @@ export const CouponModal = ({
               <div className="text-center">
                 <p className="text-white mb-4">Complete CAPTCHA to reveal code:</p>
                 <div data-captcha-enable="true"></div>
-                <button
-                  onClick={() => setCaptchaCompleted(true)}
-                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-sm"
-                >
-                  I completed the CAPTCHA
-                </button>
               </div>
             ) : (
               <div className="text-center">
