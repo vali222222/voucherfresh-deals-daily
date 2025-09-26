@@ -20,11 +20,11 @@ interface CouponModalProps {
   logo: string;
   brand: string;
   offer: string;
+  usedToday: number;
+  timeLeft: number;
 }
 
-export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModalProps) => {
-  const [usedCount] = useState(() => Math.floor(Math.random() * (300 - 100 + 1)) + 100);
-  const [remainingCount] = useState(() => Math.floor(Math.random() * (30 - 10 + 1)) + 10);
+export const CouponModal = ({ isOpen, onClose, logo, brand, offer, usedToday, timeLeft }: CouponModalProps) => {
   const [codeRevealed, setCodeRevealed] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [voucherCode] = useState(() => {
@@ -140,7 +140,7 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
                 <Clock className="w-5 h-5 text-purple-400" />
                 {/* Badge fix CLS */}
                 <span className="text-3xl font-bold text-purple-400 inline-block min-w-badge text-center">
-                  {usedCount}
+                  {usedToday}
                 </span>
               </div>
               <p className="text-gray-400 text-sm font-medium">Used</p>
@@ -153,7 +153,7 @@ export const CouponModal = ({ isOpen, onClose, logo, brand, offer }: CouponModal
                 <Users className="w-5 h-5 text-orange-400" />
                 {/* Badge fix CLS */}
                 <span className="text-3xl font-bold text-orange-400 inline-block min-w-badge text-center">
-                  {remainingCount}
+                  {timeLeft}
                 </span>
               </div>
               <p className="text-gray-400 text-sm font-medium">Uses Remaining</p>

@@ -63,6 +63,8 @@ export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCard
         logo={logo}
         brand={brand}
         offer={offer}
+        usedToday={usedToday}
+        timeLeft={timeLeft}
       />
     </div>
   );
