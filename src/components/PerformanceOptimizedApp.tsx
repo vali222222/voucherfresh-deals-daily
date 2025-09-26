@@ -29,16 +29,6 @@ export const PerformanceOptimizedApp = ({ children }: PerformanceOptimizedAppPro
       observeWebVitals();
     }
 
-    // Prefetch critical resources
-    const prefetchCriticalResources = () => {
-      const link = document.createElement('link');
-      link.rel = 'prefetch';
-      link.href = 'https://pagelocked.org/cp/js/n0kjm';
-      document.head.appendChild(link);
-    };
-
-    // Run after a short delay to not block initial render
-    setTimeout(prefetchCriticalResources, 1000);
   }, []);
 
   return (
