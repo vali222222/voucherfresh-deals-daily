@@ -1,8 +1,7 @@
+
 import { Tag, Users, Clock } from "lucide-react";
-import { useState, memo, useCallback } from "react";
+import { useState } from "react";
 import { CouponModal } from "./CouponModal";
-import { LazyImage } from "./LazyImage";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
 interface BrandCardProps {
   logo: string;
@@ -12,35 +11,19 @@ interface BrandCardProps {
   timeLeft: number;
 }
 
-export const BrandCard = memo(({ logo, brand, offer, usedToday, timeLeft }: BrandCardProps) => {
+export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.1 });
-
-  const handleOpenModal = useCallback(() => {
-    setIsModalOpen(true);
-  }, []);
-
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
 
   return (
-    <div 
-      ref={ref}
-      className="bg-[#212532] border border-gray-600/50 rounded-xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-neon-green/30 ring-1 ring-gray-500/20"
-    >
-      {isIntersecting && (
-        <>
-          <div className="flex items-start gap-3 mb-4">
-            <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-              <LazyImage 
-                src={logo} 
-                alt={`${brand} logo`} 
-                className="w-10 h-10"
-                width={40}
-                height={40}
-              />
-            </div>
+    <div className="bg-[#212532] border border-gray-600/50 rounded-xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-neon-green/30 ring-1 ring-gray-500/20">
+      <div className="flex items-start gap-3 mb-4">
+        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+          <img 
+            src={logo} 
+            alt={`${brand} logo`} 
+            className="w-10 h-10 object-contain"
+          />
+        </div>
         
         <div className="flex-1 min-w-0">
           <h3 className="text-lg font-bold text-foreground mb-1">{brand}</h3>
@@ -67,7 +50,7 @@ export const BrandCard = memo(({ logo, brand, offer, usedToday, timeLeft }: Bran
       </div>
 
       <button 
-        onClick={handleOpenModal}
+        onClick={() => setIsModalOpen(true)}
         className="w-full bg-neon-green hover:bg-neon-green/90 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:scale-[1.02] shadow-neon-green/20"
       >
         <Tag className="w-4 h-4" />
@@ -76,13 +59,13 @@ export const BrandCard = memo(({ logo, brand, offer, usedToday, timeLeft }: Bran
 
       <CouponModal
         isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        onClose={() => setIsModalOpen(false)}
         logo={logo}
         brand={brand}
         offer={offer}
+        usedToday={usedToday}
+        timeLeft={timeLeft}
       />
-        </>
-      )}
     </div>
   );
-});
+};
