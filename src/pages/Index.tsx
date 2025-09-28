@@ -8,6 +8,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { preloadImages } from "@/utils/performance";
 import appleLogo from "@/assets/apple-logo.png";
 import doordashLogo from "@/assets/doordash-logo.png";
+import mcdonaldsLogo from "@/assets/mcdonalds-logo.png";
 import sephoraLogo from "@/assets/sephora-logo.png";
 import hmLogo from "@/assets/hm-logo.png";
 import zaraLogo from "@/assets/zara-logo.png";
@@ -18,7 +19,7 @@ const Index = () => {
 
   // Preload critical images on component mount
   useEffect(() => {
-    const criticalImages = [appleLogo, doordashLogo, sephoraLogo, hmLogo, zaraLogo];
+    const criticalImages = [appleLogo, doordashLogo, mcdonaldsLogo, sephoraLogo, hmLogo, zaraLogo];
     preloadImages(criticalImages);
   }, []);
 
@@ -40,6 +41,13 @@ const Index = () => {
       offer: "90% Off Your Order",
       usedToday: 142,
       timeLeft: 16,
+    },
+    {
+      logo: mcdonaldsLogo,
+      brand: "McDonald's",
+      offer: "$100 Gift Card",
+      usedToday: 167,
+      timeLeft: 14,
     },
     {
       logo: sephoraLogo,
