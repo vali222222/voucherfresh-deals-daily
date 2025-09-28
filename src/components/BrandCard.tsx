@@ -50,11 +50,11 @@ export const BrandCard = ({ logo, brand, offer, usedToday, timeLeft }: BrandCard
   return (
     <div className="bg-[#212532] border border-gray-600/50 rounded-xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-neon-green/30 ring-1 ring-gray-500/20">
       <div className="flex items-start gap-3 mb-4">
-        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md overflow-hidden">
           <img 
             src={logo} 
             alt={`${brand} logo`} 
-            className="w-10 h-10 object-contain"
+            className="w-full h-full object-cover"
           />
         </div>
         
