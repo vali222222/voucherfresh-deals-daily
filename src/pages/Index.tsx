@@ -38,7 +38,7 @@ const Index = () => {
     {
       logo: crumblcookieLogo,
       brand: "Crumbl Cookies",
-      offer: "Get a Free Box with Your First Order 🍪",
+      offer: "Students Only - 95% Off Your Order 🍪",
       usedToday: 324,
       timeLeft: 9,
     },
@@ -52,7 +52,7 @@ const Index = () => {
     {
       logo: doordashLogo,
       brand: "DoorDash",
-      offer: "75% Off Your Order 🚗",
+      offer: "90% Off Your Order 🚗",
       usedToday: 167,
       timeLeft: 14,
     },
@@ -66,7 +66,7 @@ const Index = () => {
     {
       logo: hmLogo,
       brand: "H&M",
-      offer: "80% Off Your Order 👗",
+      offer: "45% Off Your Order 👗",
       usedToday: 185,
       timeLeft: 21,
     },
