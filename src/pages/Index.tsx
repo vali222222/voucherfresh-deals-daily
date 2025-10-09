@@ -38,7 +38,7 @@ const Index = () => {
     {
       logo: crumblcookieLogo,
       brand: "Crumbl Cookies",
-      offer: "Students Only - 95% Off Your Order 🍪",
+      offer: "Students Only - 95% Off Your Order",
       usedToday: 324,
       timeLeft: 9,
     },
