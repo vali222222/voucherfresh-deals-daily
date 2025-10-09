@@ -8,7 +8,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { preloadImages } from "@/utils/performance";
 import appleLogo from "@/assets/apple-logo.png";
 import doordashLogo from "@/assets/doordash-logo.png";
-import mcdonaldsLogo from "@/assets/mcdonalds-logo.png";
+import crumblcookieLogo from "@/assets/crumblcookies-logo.png";
 import sephoraLogo from "@/assets/sephora-logo.png";
 import hmLogo from "@/assets/hm-logo.png";
 import zaraLogo from "@/assets/zara-logo.png";
@@ -29,23 +29,23 @@ const Index = () => {
   
   const brands = [
     {
-      logo: appleLogo,
-      brand: "Apple",
+      logo: crumblcookieLogo,
+      brand: "Crumbl Cookie",
       offer: "Students Only - 95% Off Your Order",
       usedToday: 198,
       timeLeft: 13,
     },
     {
-      logo: doordashLogo,
-      brand: "DoorDash",
+      logo: appleLogo,
+      brand: "Apple",
       offer: "90% Off Your Order",
       usedToday: 142,
       timeLeft: 16,
     },
     {
-      logo: mcdonaldsLogo,
-      brand: "McDonald's",
-      offer: "$100 Gift Card",
+      logo: doordashLogo,
+      brand: "Doordash",
+      offer: "75% Off Your Order",
       usedToday: 167,
       timeLeft: 14,
     },
