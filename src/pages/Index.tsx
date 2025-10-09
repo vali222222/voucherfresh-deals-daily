@@ -6,9 +6,9 @@ import { MobileOnlyScreen } from "@/components/MobileOnlyScreen";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { preloadImages } from "@/utils/performance";
+import crumblcookieLogo from "@/assets/crumblcookies-logo.png";
 import appleLogo from "@/assets/apple-logo.png";
 import doordashLogo from "@/assets/doordash-logo.png";
-import crumblcookieLogo from "@/assets/crumblcookies-logo.png";
 import sephoraLogo from "@/assets/sephora-logo.png";
 import hmLogo from "@/assets/hm-logo.png";
 import zaraLogo from "@/assets/zara-logo.png";
@@ -19,7 +19,14 @@ const Index = () => {
 
   // Preload critical images on component mount
   useEffect(() => {
-    const criticalImages = [appleLogo, doordashLogo, mcdonaldsLogo, sephoraLogo, hmLogo, zaraLogo];
+    const criticalImages = [
+      crumblcookieLogo,
+      appleLogo,
+      doordashLogo,
+      sephoraLogo,
+      hmLogo,
+      zaraLogo,
+    ];
     preloadImages(criticalImages);
   }, []);
 
@@ -30,43 +37,43 @@ const Index = () => {
   const brands = [
     {
       logo: crumblcookieLogo,
-      brand: "Crumbl Cookie",
-      offer: "Students Only - 95% Off Your Order",
-      usedToday: 198,
-      timeLeft: 13,
+      brand: "Crumbl Cookies",
+      offer: "Get a Free Box with Your First Order 🍪",
+      usedToday: 324,
+      timeLeft: 9,
     },
     {
       logo: appleLogo,
       brand: "Apple",
-      offer: "90% Off Your Order",
-      usedToday: 142,
-      timeLeft: 16,
+      offer: "Students Only - 95% Off Your Order 🍏",
+      usedToday: 198,
+      timeLeft: 13,
     },
     {
       logo: doordashLogo,
-      brand: "Doordash",
-      offer: "75% Off Your Order",
+      brand: "DoorDash",
+      offer: "75% Off Your Order 🚗",
       usedToday: 167,
       timeLeft: 14,
     },
     {
       logo: sephoraLogo,
       brand: "Sephora",
-      offer: "60% Off Your Order",
+      offer: "60% Off Your Order 💄",
       usedToday: 209,
       timeLeft: 18,
     },
     {
       logo: hmLogo,
       brand: "H&M",
-      offer: "80% Off Your Order",
+      offer: "80% Off Your Order 👗",
       usedToday: 185,
       timeLeft: 21,
     },
     {
       logo: zaraLogo,
       brand: "Zara",
-      offer: "70% Off Your Order",
+      offer: "70% Off Your Order 👠",
       usedToday: 246,
       timeLeft: 11,
     },
@@ -81,7 +88,6 @@ const Index = () => {
     );
   }, [searchQuery, brands]);
 
-  // Show mobile-only screen for desktop users
   if (!isMobile) {
     return <MobileOnlyScreen />;
   }
@@ -109,7 +115,9 @@ const Index = () => {
             ))
           ) : (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">Nu au fost găsite oferte pentru "{searchQuery}"</p>
+              <p className="text-muted-foreground">
+                Nu au fost găsite oferte pentru "{searchQuery}"
+              </p>
             </div>
           )}
         </div>
